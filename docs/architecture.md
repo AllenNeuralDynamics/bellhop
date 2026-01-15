@@ -115,6 +115,27 @@ Interaction with the engine is through a HTTP API that supports operations like:
 
 The bellhop-engine runs in the background as a service.
 
+### Templates
+
+The bellhop engine can store Instruction templates, which make it easier to create a concrete Instruction for a specific dataset based on a general pattern. Templates will (likely) be stored as yaml files parametrized using jinja variables like the following example:
+
+```yaml
+name: Upload {{ barcode }} Dataset
+Tasks:
+  - program: Move Data
+    kwargs:
+      source: D://acquisition_data/{{ barcode }}/
+      destination: s3://{{ s3_bucket }}/{{ barcode }}
+  - program: Run Subprocess
+    args: 
+      - C://Program Files/Alleninstitute/notify_database/notify_database.exe
+      - {{ barcode }}
+```
+
+A new concrete instruction can be created based on the template with a simplified command like this:
+
+`bellhop submit-instruction --from-template "TemplateName" --barcode 123456 --s3_bucket "MyBucketName"`
+
 
 ## Bellhop-UI
 
