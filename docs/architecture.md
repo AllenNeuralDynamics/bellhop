@@ -2,11 +2,11 @@
 
 ## Introduction
 
-Bellhop is a tool to handle the movement of scientific data off an experimental computer after it is acquired. 
+Bellhop is a system designed to manage the transfer of scientific data from experimental computing environments once acquisition is complete. 
 
 ### Prototypical Use Case
 
-Scientific data is collected and saved to the local storage of a lab/acquisition computer, and the data needs to be transferred off the computer into some centralized storage solution. Many trials are collected, and each dataset needs to be handled identically. A potential simple procedure for data egress is:
+Scientific data is collected and saved to the local storage of a lab/acquisition computer, and the data needs to be transferred off the computer into some centralized storage solution. Many sessions are collected, and each dataset needs to be handled identically. A potential simple procedure for data egress is:
 
 1. Copy the data files from a local drive to a shared network location
 2. Notify the lab's database that the experiment is complete and the data is now available
@@ -46,7 +46,7 @@ file.write_text('hello')
 
 So why not just use fsspec libraries for data movement?
 
-In the future, ideally that would be possible, but in its current state fsspec isn't exactly optimized for performance (see [this issue](https://github.com/fsspec/s3fs/issues/900)). It works great for small files, but moving large amounts of data is still best left to other libraries.
+In the future, ideally that would be possible, but in its current state fsspec hasn't been performance-optimized to the same level as other, more specific tools. It works great for small files (and is improving for large files), but moving large amounts of data is still best left to other libraries.
 
 ### Design
 
@@ -84,7 +84,7 @@ def move_file(source: UPath, destination: UPath):
 
 #### Configurability
 
-An upload library like `boto3` might have some configuration options. Those can be set from a bellhop-trolley config file, and optionally overridden for any specific instance of
+An upload library like `boto3` might have some configuration options. Those can be set from a bellhop-trolley config file, and optionally overridden for any specific invocation.
 
 Additionally, there may be a few library options for a given storage implementation. For instance, local copies can either use the builtin Python `shutil` library, or call a command-line tool like `robocopy`. Bellhop-trolley contains shims for many of these options, and loads configuration to dictate which one gets used by default.
 
@@ -117,7 +117,7 @@ The bellhop-engine runs in the background as a service.
 
 ### Templates
 
-The bellhop engine can store Instruction templates, which make it easier to create a concrete Instruction for a specific dataset based on a general pattern. Templates will (likely) be stored as yaml files parametrized using jinja variables like the following example:
+The bellhop engine can store Instruction templates, which make it easier to create a concrete Instruction for a specific dataset based on a general pattern. Templates will be stored as yaml files parametrized using jinja variables like the following example:
 
 ```yaml
 name: Upload {{ barcode }} Dataset
@@ -143,10 +143,12 @@ The Bellhop UI offers a web interface for interacting with the engine via its RE
 
 The UI visualizes completed, in-progress, and scheduled Instructions and Tasks, and provides a clickable interface to dig into status or errors. 
 
+Additionally, the UI provides the ability to manually submit an instruction, or edit and retry a failed one.
+
 ## Bellhop-Client
 
 The Bellhop-client is a programmatic interface to the engine's REST API, allowing operations like submitting/updating instructions, or investigating status.
 
 The client can be imported as a python library for use within code, or run directly from the command line.
 
-Additionally, the client has access to the service management component, so it can start/restart/end/monitor the bellhop-engine process. A use case for this is if the engine dies for some reason, a client submitting an instruction can first restart the engine to ensure it's running.
+Additionally, the client has access to the service management component, so it can start/restart/end/monitor the bellhop-engine process. In case of an unexpected crash, a client submitting an instruction can first restart the engine to ensure it's running.
