@@ -136,6 +136,9 @@ A new concrete instruction can be created based on the template with a simplifie
 
 `bellhop submit-instruction --from-template "TemplateName" --barcode 123456 --s3_bucket "MyBucketName"`
 
+### Notifications
+
+To aid in monitoring the success or failure of automated instruction execution, a robust configurable notification system is included. This will include a small library of notification options supporting common tools such as email, MS Teams, and Slack. Configuration will allow users to specify their preferred notification method, and what events trigger notifications, such as task/instruction failures.
 
 ## Bellhop-UI
 
