@@ -26,6 +26,8 @@ Bellhop contains 4 main components:
 - **bellhop-ui**: A frontend user interface for interacting with the bellhop-engine
 - **bellhop-client**: A CLI and client library for interacting with the bellhop-engine programmatically
 
+These components operate as separate packages and can be installed separately, but will be managed in a single git repository to ensure synchronicity.
+
 ![Architecture Diagram](bellhop_architecture.png)
 
 ## Bellhop-Trolley
