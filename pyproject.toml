@@ -1,0 +1,44 @@
+[project]
+name = "bellhop"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+authors = [
+    { name = "Patrick Latimer", email = "patrick.latimer@alleninstitute.org" }
+]
+requires-python = ">=3.12"
+dependencies = [
+    "apscheduler>=3.11.1",
+    "bellhop-models",
+    "bellhop-trolley",
+    "cyclopts>=4.3.0",
+    "loguru>=0.7.3",
+    "pydantic>=2.11.5",
+    "pydantic-settings>=2.9.1",
+    "pyyaml>=6.0.3",
+    "tinydb>=4.8.2",
+]
+
+[tool.uv.workspace]
+members = ["packages/*"]
+
+[tool.uv.sources]
+bellhop-models = { workspace = true }
+bellhop-trolley = { workspace = true }
+
+[project.scripts]
+bellhop = "bellhop:main"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[dependency-groups]
+dev = [
+    "jupyter>=1.1.1",
+    "pytest>=8.4.0",
+    "moto",
+]
+
+[tool.ruff]
+line-length = 120

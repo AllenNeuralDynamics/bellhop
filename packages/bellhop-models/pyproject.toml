@@ -1,0 +1,26 @@
+[project]
+name = "bellhop-models"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+authors = [
+    { name = "Patrick Latimer", email = "patrick.latimer@alleninstitute.org" }
+]
+requires-python = ">=3.12"
+dependencies = [
+    "pydantic>=2.11.5",
+    "universal-pathlib>=0.2.6",
+]
+
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[dependency-groups]
+dev = [
+    "pytest>=8.4.0",
+]
+
+[tool.ruff]
+line-length = 120
