@@ -1,3 +1,3 @@
-from . import local, google, robocopy, s3
+from . import google, local, robocopy, s3
 
-__all__ = ["local", "google", "robocopy", "s3"]
+__all__ = ["google", "local", "robocopy", "s3"]

@@ -2,10 +2,10 @@
 Robocopy wrapper with human-readable keyword arguments.
 """
 
+import logging
 import subprocess
 from pathlib import Path
-from typing import List, Optional, Union
-import logging
+
 from pydantic import BaseModel, Field
 
 logger = logging.getLogger(__name__)
@@ -21,7 +21,7 @@ class RobocopyOptions(BaseModel):
     subdirectories_including_empty: bool = Field(
         default=False, description="Copy subdirectories including empty ones", serialization_alias="/E"
     )
-    levels: Optional[int] = Field(
+    levels: int | None = Field(
         default=None, description="Only copy the top n levels of the source directory tree", serialization_alias="/LEV"
     )
     restart_mode: bool = Field(default=False, description="Copy files in restartable mode", serialization_alias="/Z")
@@ -78,10 +78,10 @@ class RobocopyOptions(BaseModel):
     )
 
     # File selection attributes
-    include_attributes: Optional[str] = Field(
+    include_attributes: str | None = Field(
         default=None, description="Only copy files with these attributes set", serialization_alias="/IA"
     )
-    exclude_attributes: Optional[str] = Field(
+    exclude_attributes: str | None = Field(
         default=None, description="Exclude files with these attributes set", serialization_alias="/XA"
     )
     exclude_changed_files: bool = Field(default=False, description="Exclude Changed files", serialization_alias="/XC")
@@ -97,32 +97,32 @@ class RobocopyOptions(BaseModel):
     include_tweaked_files: bool = Field(default=False, description="Include Tweaked files", serialization_alias="/IT")
 
     # File size selection
-    maximum_file_size: Optional[int] = Field(
+    maximum_file_size: int | None = Field(
         default=None, description="Maximum file size in bytes", serialization_alias="/MAX"
     )
-    minimum_file_size: Optional[int] = Field(
+    minimum_file_size: int | None = Field(
         default=None, description="Minimum file size in bytes", serialization_alias="/MIN"
     )
-    maximum_file_age_days: Optional[int] = Field(
+    maximum_file_age_days: int | None = Field(
         default=None, description="Maximum file age - exclude files older than n days", serialization_alias="/MAXAGE"
     )
-    minimum_file_age_days: Optional[int] = Field(
+    minimum_file_age_days: int | None = Field(
         default=None, description="Minimum file age - exclude files newer than n days", serialization_alias="/MINAGE"
     )
-    maximum_last_access_days: Optional[int] = Field(
+    maximum_last_access_days: int | None = Field(
         default=None,
         description="Maximum Last Access Date - exclude files unused since n",
         serialization_alias="/MAXLAD",
     )
-    minimum_last_access_days: Optional[int] = Field(
+    minimum_last_access_days: int | None = Field(
         default=None, description="Minimum Last Access Date - exclude files used since n", serialization_alias="/MINLAD"
     )
 
     # File and directory exclusion
-    exclude_files: Optional[List[str]] = Field(
+    exclude_files: list[str] | None = Field(
         default=None, description="List of file names/patterns to exclude", serialization_alias="/XF"
     )
-    exclude_directories: Optional[List[str]] = Field(
+    exclude_directories: list[str] | None = Field(
         default=None, description="List of directory names to exclude", serialization_alias="/XD"
     )
 
@@ -135,7 +135,7 @@ class RobocopyOptions(BaseModel):
     )
 
     # Logging options
-    log_file: Optional[Union[str, Path]] = Field(
+    log_file: str | Path | None = Field(
         default=None, description="Output status to LOG file", serialization_alias="/LOG"
     )
     append_to_log: bool = Field(
@@ -162,15 +162,15 @@ class RobocopyOptions(BaseModel):
     )
 
     # Performance options
-    multithread: Optional[int] = Field(
+    multithread: int | None = Field(
         default=None, description="Do multi-threaded copies with n threads", serialization_alias="/MT"
     )
 
     # Job options
-    job_name: Optional[str] = Field(
+    job_name: str | None = Field(
         default=None, description="Take parameters from the named job file", serialization_alias="/JOB"
     )
-    save_job: Optional[Union[str, Path]] = Field(
+    save_job: str | Path | None = Field(
         default=None, description="Save parameters to the named job file", serialization_alias="/SAVE"
     )
     quit_after_processing: bool = Field(
@@ -218,7 +218,7 @@ class RobocopyOptions(BaseModel):
         default=False, description="Enable restore privilege", serialization_alias="/B"
     )
 
-    def to_args(self) -> List[str]:
+    def to_args(self) -> list[str]:
         """
         Convert the model to robocopy command-line arguments.
 
@@ -278,11 +278,7 @@ class RobocopyOptions(BaseModel):
                 if field_name == "purge_destination" and self.mirror:
                     continue
                 args.append(alias)
-            elif isinstance(value, int):
-                args.append(f"{alias}:{value}")
-            elif isinstance(value, str):
-                args.append(f"{alias}:{value}")
-            elif isinstance(value, Path):
+            elif isinstance(value, int) or isinstance(value, str) or isinstance(value, Path):
                 args.append(f"{alias}:{value}")
             elif isinstance(value, list):
                 args.append(alias)
@@ -307,8 +303,8 @@ class RobocopyOptions(BaseModel):
 
 
 def robocopy(
-    source: Union[str, Path],
-    destination: Union[str, Path],
+    source: str | Path,
+    destination: str | Path,
     files: str = "*.*",
     **options: RobocopyOptions,
 ) -> subprocess.CompletedProcess:
@@ -412,9 +408,9 @@ def robocopy(
 
 # Convenience functions for common use cases
 def mirror_directories(
-    source: Union[str, Path],
-    destination: Union[str, Path],
-    log_file: Optional[Union[str, Path]] = None,
+    source: str | Path,
+    destination: str | Path,
+    log_file: str | Path | None = None,
     verbose: bool = True,
     **kwargs,
 ) -> subprocess.CompletedProcess:
@@ -435,10 +431,10 @@ def mirror_directories(
 
 
 def sync_directories(
-    source: Union[str, Path],
-    destination: Union[str, Path],
+    source: str | Path,
+    destination: str | Path,
     exclude_older: bool = True,
-    log_file: Optional[Union[str, Path]] = None,
+    log_file: str | Path | None = None,
     verbose: bool = True,
     **kwargs,
 ) -> subprocess.CompletedProcess:
@@ -468,11 +464,11 @@ def sync_directories(
 
 
 def backup_with_retry(
-    source: Union[str, Path],
-    destination: Union[str, Path],
+    source: str | Path,
+    destination: str | Path,
     retry_count: int = 5,
     retry_wait_seconds: int = 30,
-    log_file: Optional[Union[str, Path]] = None,
+    log_file: str | Path | None = None,
     **kwargs,
 ) -> subprocess.CompletedProcess:
     """

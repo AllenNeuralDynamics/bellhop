@@ -1,12 +1,12 @@
-from email.message import EmailMessage
-from email.mime.multipart import MIMEMultipart
-from email.mime.text import MIMEText
 import os
 import smtplib
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
 
 from loguru import logger
 
 # TODO: Replace with apprise
+
 
 def send_email(
     subject: str,
@@ -42,7 +42,7 @@ def send_email(
                 s.send_message(msg)
                 print(f"EMAILING {to}")
         logger.info(
-            f"Sent email",
+            "Sent email",
             subject=subject,
             to=to,
             body=body,

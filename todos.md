@@ -39,6 +39,7 @@ General:
   - Templates should be saveable/updateable per bellhop instance, and jobs can be submitted by referencing the template and providing the necessary kwargs to fill it in
 - Integrate apprise for notifications
 - Rename dropbox to mailbox
+- Update tests to use normal/realistic terminology and examples
 
 Docs:
 - Update docs and diagrams with new terminology

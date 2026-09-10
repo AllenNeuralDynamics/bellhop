@@ -14,3 +14,7 @@ api:
 
 ui:
 	cd packages/bellhop-ui && uv run reflex run
+
+format:
+	uvx ruff check --fix .
+	uvx ruff format .

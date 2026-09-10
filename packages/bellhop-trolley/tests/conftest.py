@@ -1,6 +1,5 @@
 import os
 from pathlib import Path
-from typing import Optional
 
 import pytest
 from upath import UPath
@@ -28,7 +27,7 @@ def example_data(tmp_path: Path) -> list[UPath]:
     return paths
 
 
-def make_dummy_data(folder: Path, files: Optional[list[tuple[str, int]]] = None) -> list[Path]:
+def make_dummy_data(folder: Path, files: list[tuple[str, int]] | None = None) -> list[Path]:
     """Make some random data files for testing."""
 
     if files is None:

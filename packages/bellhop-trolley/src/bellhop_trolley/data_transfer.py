@@ -1,5 +1,5 @@
+from collections.abc import Callable
 from functools import cache
-from typing import Callable
 
 from pydantic import validate_call
 from upath import UPath

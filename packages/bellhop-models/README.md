@@ -7,6 +7,7 @@ The main usage pattern is like this:
 ```python
 from bellhop_models.database import Job
 from bellhop_models_specifications import JobSpecification, TransferDataTask, TransferDataParams
+
 job = JobSpecification(
     name="My Pipeline",
     tasks=[
@@ -16,9 +17,11 @@ job = JobSpecification(
         ),
         HTTPRequestTask(
             name="Notify tracking service",
-            parameters=HTTPRequestParams(url="my-tracking-service/api/", method="POST", data={"action", "experiment_complete"})
-        )
-    ]
+            parameters=HTTPRequestParams(
+                url="my-tracking-service/api/", method="POST", data={"action", "experiment_complete"}
+            ),
+        ),
+    ],
 )
 
 # Use bellhop client to submit and monitor job (separate from this models package)
@@ -30,5 +33,5 @@ submitted_job: Job = bellhop_client.submit_job(job)
 time.sleep(5)
 
 updated_job: Job = bellhop_client.get_job_status(submitted_job.id)
-print(updated_job.history) # list task execution history
+print(updated_job.history)  # list task execution history
 ```

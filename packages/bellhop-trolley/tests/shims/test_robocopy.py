@@ -16,7 +16,6 @@ from bellhop_trolley.shims.robocopy import (
     sync_directories,
 )
 
-
 # ── Helpers ──────────────────────────────────────────────────────────────────
 
 
@@ -299,7 +298,7 @@ class TestRobocopyFunction:
         robocopy("C:\\src", "D:\\dst")
         assert mock_run.call_args[1].get("capture_output") is True
 
-    @pytest.mark.parametrize("code", range(0, 8))
+    @pytest.mark.parametrize("code", range(8))
     @patch("bellhop_trolley.shims.robocopy.subprocess.run")
     def test_exit_codes_0_to_7_do_not_raise(self, mock_run, code):
         mock_run.return_value = _completed(code)

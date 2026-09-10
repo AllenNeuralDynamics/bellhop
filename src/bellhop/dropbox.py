@@ -1,12 +1,12 @@
 from pathlib import Path
 
 import yaml
+from bellhop_models.specifications import JobSpecification
 from loguru import logger
 from watchdog.events import FileSystemEvent, FileSystemEventHandler
 from watchdog.observers import Observer
 
 from bellhop.engine import Engine
-from bellhop_models.specifications import JobSpecification
 
 
 class _DropboxHandler(FileSystemEventHandler):

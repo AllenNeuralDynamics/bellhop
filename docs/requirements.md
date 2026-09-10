@@ -104,9 +104,9 @@ import bellhop
 bellhop.copy(source=Path(...), destination=Path(...))
 
 # Create manifest for scheduled execution
-manifest = bellhop.Manifest(name='12345',schedule_time=...)
+manifest = bellhop.Manifest(name="12345", schedule_time=...)
 manifest.add_task(bellhop.tasks.Copy(source=Path(...), destination=Path(...)))
-manifest.add_task(bellhop.tasks.Subprocess(process=Path('something.exe'), args = [...]))
+manifest.add_task(bellhop.tasks.Subprocess(process=Path("something.exe"), args=[...]))
 manifest.write()
 ```
 

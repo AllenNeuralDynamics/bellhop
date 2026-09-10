@@ -1,5 +1,4 @@
-from bellhop_trolley import transfer_data, delete_data
-
+from bellhop_trolley import delete_data, transfer_data
 
 transfer_data("local/source/path", "local/destination/path")
 

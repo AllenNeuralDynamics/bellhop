@@ -1,9 +1,9 @@
-from typing import get_type_hints, get_args
+from typing import get_args, get_type_hints
 
-from pydantic import BaseModel
 import pytest
+from bellhop_models.specifications import AnyTask, TaskTypes
+from pydantic import BaseModel
 
-from bellhop_models.specifications import TaskTypes, AnyTask
 from bellhop.task_executors import task_executor_registry
 
 

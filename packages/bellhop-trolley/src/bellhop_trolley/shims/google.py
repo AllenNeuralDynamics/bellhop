@@ -1,5 +1,4 @@
 from pathlib import Path
-from typing import Optional
 
 from google.cloud.storage import Client, transfer_manager
 from pydantic_settings import BaseSettings
@@ -9,7 +8,7 @@ from bellhop_trolley._config_utils import ContextConfig
 
 
 class GoogleCloudTransferSettings(BaseSettings):
-    gcs_credential_json: Optional[Path] = None
+    gcs_credential_json: Path | None = None
     upload_workers: int = 8
 
 
@@ -40,7 +39,7 @@ def delete(path: GCSPath):
     blob.delete()
 
 
-def _gcs_client(credential_json: Optional[Path] = None) -> Client:
+def _gcs_client(credential_json: Path | None = None) -> Client:
     """
     Returns a Google Cloud Storage client using the service account credentials.
 

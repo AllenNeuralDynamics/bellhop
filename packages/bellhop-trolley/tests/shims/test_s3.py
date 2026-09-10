@@ -5,7 +5,6 @@ Uses moto to mock AWS — no real credentials or network access required.
 Tests mirror the same behaviors as test_local.py where applicable.
 """
 
-import pytest
 from upath import UPath
 
 from bellhop_trolley.shims.s3 import _download_directory, _download_file, _upload_directory, _upload_file, delete

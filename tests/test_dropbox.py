@@ -1,12 +1,10 @@
 import time
-import uuid
-import yaml
+
 import pytest
-from pathlib import Path
+import yaml
 
-from bellhop.engine import Engine
 from bellhop.dropbox import JobDropbox, _DropboxHandler
-
+from bellhop.engine import Engine
 
 # ---------------------------------------------------------------------------
 # Fixtures
