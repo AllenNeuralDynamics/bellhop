@@ -1,27 +1,26 @@
-from pathlib import Path
 import textwrap
+from pathlib import Path
 
 import pytest
 import yaml
 from pydantic import ValidationError
 from upath import UPath
 
+from bellhop_models.database import Job
 from bellhop_models.specifications import (
     DeleteDataParams,
     DeleteDataTask,
-    JobSpecification,
     HTTPRequestParams,
     HTTPRequestTask,
+    JobSpecification,
     RunSubprocessParams,
-    SubprocessTask,
     SendMessageParams,
     SendMessageTask,
+    SubprocessTask,
     TransferDataListParams,
     TransferDataParams,
     TransferDataTask,
 )
-from bellhop_models.database import Job
-
 
 # ---------------------------------------------------------------------------
 # Constructing Jobs in code
@@ -85,7 +84,7 @@ def test_job_serialization():
         return str(UPath(s))  # normalise paths to the current platform
 
     job = _build_full_job()
-    data = job.model_dump(mode="json", exclude={"scheduled_execution"})
+    data = job.model_dump(mode="json", exclude={"time_scheduled"})
 
     assert data == {
         "name": "My Pipeline",
@@ -300,4 +299,7 @@ def test_spec_to_internal():
 
     assert isinstance(job, Job)
     new = JobSpecification(**job.model_dump())
+    assert job.next_execution_time is not None
+    job_spec.time_scheduled = job.next_execution_time
+    new.time_scheduled = job.next_execution_time
     assert new == job_spec

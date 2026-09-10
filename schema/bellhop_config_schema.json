@@ -1,0 +1,44 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "data_dir": {
+      "default": "C:\\ProgramData\\AllenInstitute\\bellhop",
+      "format": "path",
+      "title": "Data Dir",
+      "type": "string"
+    },
+    "database_file": {
+      "anyOf": [
+        {
+          "format": "path",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Database File"
+    },
+    "dropbox_dir": {
+      "anyOf": [
+        {
+          "format": "path",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Dropbox Dir"
+    },
+    "api_port": {
+      "default": 8311,
+      "title": "Api Port",
+      "type": "integer"
+    }
+  },
+  "title": "Config",
+  "type": "object"
+}

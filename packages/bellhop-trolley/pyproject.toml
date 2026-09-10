@@ -12,6 +12,7 @@ dependencies = [
     "fsspec[gcs,s3]>=2025.5.1",
     "google-cloud-storage>=3.1.0",
     "pydantic>=2.11.5",
+    "pydantic-settings>=2.11.5",
     "universal-pathlib>=0.3.10",
 ]
 

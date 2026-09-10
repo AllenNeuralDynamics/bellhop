@@ -19,11 +19,10 @@ Examples
 """
 
 from datetime import datetime, time
-from typing import Annotated, Literal, Optional
+from typing import Annotated, Literal
 
-from pydantic import BaseModel, BeforeValidator, Field, PlainSerializer
+from pydantic import BaseModel, BeforeValidator, Field, PlainSerializer, TypeAdapter
 from upath import UPath as _UPath
-
 
 ## Type coercion util
 
@@ -51,7 +50,7 @@ TaskTypes = Literal[
 
 class TaskSpecification[ParamsT](BaseModel):
     name: str
-    description: Optional[str] = None
+    description: str | None = None
     task_type: TaskTypes
     parameters: ParamsT
 
@@ -72,7 +71,7 @@ class TransferDataListParams(BaseModel, arbitrary_types_allowed=True):
     source: list[UPath]
     destination: UPath
     options: dict = {}  # Additional storage-specific options
-    source_base_dir: Optional[UPath] = None  # Optional base dir common to all sources
+    source_base_dir: UPath | None = None  # Optional base dir common to all sources
     preserve_structure: bool = True  # If source_base_dir, will preserve relative paths
     parallel: bool = False  # Whether to perform transfers in parallel
 
@@ -154,7 +153,7 @@ class HTTPRequestParams(BaseModel):
     url: str
     method: Literal["GET", "POST", "PUT", "DELETE"] = "GET"
     headers: dict = {}
-    data: Optional[dict] = None
+    data: dict | None = None
 
 
 class HTTPRequestTask(TaskSpecification[HTTPRequestParams]):
@@ -170,10 +169,12 @@ AnyTask = Annotated[
     Field(discriminator="task_type"),
 ]
 
+AnyTaskAdapter = TypeAdapter(AnyTask)
+
 
 class JobSpecification(BaseModel):
     name: str
-    description: Optional[str] = None
+    description: str | None = None
     custom_fields: dict = {}
-    scheduled_execution: datetime | time = Field(default_factory=datetime.now)
+    time_scheduled: datetime | time | None = None
     tasks: list[AnyTask]
