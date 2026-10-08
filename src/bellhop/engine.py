@@ -4,6 +4,7 @@ import sys
 import threading
 import uuid
 
+import loguru
 from apscheduler.jobstores.base import JobLookupError
 from apscheduler.schedulers.background import BackgroundScheduler
 from bellhop_models.database import Job, Task, TaskExecution
@@ -11,7 +12,7 @@ from bellhop_models.specifications import JobSpecification
 from loguru import logger
 
 from bellhop.db import DATABASE_FILE, Database
-from bellhop.task_executors import task_executor_registry
+from bellhop.task_executors import TaskExecutorFn, task_executor_registry
 
 
 class Engine:
@@ -146,41 +147,49 @@ class JobExecutor:
 
 def _execute_job(job_id: uuid.UUID, db_file: str) -> None:
     logger.remove()
-    logger.add(sys.stderr)
+    logger.add(
+        sys.stderr,
+        format=loguru._defaults.LOGURU_FORMAT + " | {extra}",  # include extra context in format
+        colorize=True,
+    )
     database = Database(db_file)
     job = database.get_job(job_id)
     if job is None:
         return
-    logger.info(f"Job '{job.name}' ({job_id}) starting")
-    job.state = "In Progress"
-    database.update_job(job)
 
-    while job.next_task is not None:
-        task = job.tasks[job.next_task]
-        logger.info(f"Starting task '{task.name}' [{job.next_task + 1}/{len(job.tasks)}]")
-        task.state = "In Progress"
-        database.update_task(task)
+    with logger.contextualize(job_name=job.name, job_id=job_id):
+        logger.info(f"Job '{job.name}' ({job_id}) starting")
+        job.state = "In Progress"
+        database.update_job(job)
 
-        task_execution = _execute_task(task, database)  # blocking; process.kill() stops it here
+        while job.next_task is not None:
+            task = job.tasks[job.next_task]
+            with logger.contextualize(task_name=task.name, task_id=task.id):
+                logger.info(f"Starting task '{task.name}' [{job.next_task + 1}/{len(job.tasks)}]")
+                task.state = "In Progress"
+                database.update_task(task)
 
-        if task_execution.success:
-            logger.info(f"Task '{task.name}' completed")
-            task.state = "Completed"
-            database.update_task(task)
-            if job.next_task == len(job.tasks) - 1:
-                job.next_task = None
-                job.state = "Completed"
-            else:
-                job.next_task += 1
-                job.state = "In Progress"
-            database.update_job(job)
-        else:
-            task.state = "Errored"
-            database.update_task(task)
-            job.state = "Errored"
-            logger.error(f"Task '{task.name}' failed: {task_execution.message}")
-            database.update_job(job)
-            return
+                executor_func = task_executor_registry[task.task_type]
+                task_execution = _execute_task(task, database, executor_func)
+
+                if task_execution.success:
+                    logger.info(f"Task '{task.name}' completed")
+                    task.state = "Completed"
+                    database.update_task(task)
+                    if job.next_task == len(job.tasks) - 1:
+                        job.next_task = None
+                        job.state = "Completed"
+                    else:
+                        job.next_task += 1
+                        job.state = "In Progress"
+                    database.update_job(job)
+                else:
+                    task.state = "Errored"
+                    database.update_task(task)
+                    job.state = "Errored"
+                    logger.error(f"Task '{task.name}' failed: {task_execution.message}")
+                    database.update_job(job)
+                    return
 
 
 class _LogWriter:
@@ -200,13 +209,13 @@ class _LogWriter:
         return "\n".join(self._lines)
 
 
-def _execute_task(task: Task, database: Database) -> TaskExecution:
+def _execute_task(task: Task, database: Database, executor_func: TaskExecutorFn) -> TaskExecution:
     execution = TaskExecution(task=task, time_started=datetime.datetime.now())
     database.add_execution(execution)
     log_writer = _LogWriter(execution.id, database)
     message = None
     try:
-        task_executor_registry[task.task_type](task.parameters, log_writer)
+        executor_func(task.parameters, log_writer)
         success = True
     except Exception as e:
         success = False

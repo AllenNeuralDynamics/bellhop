@@ -46,7 +46,7 @@ paths:
             application/json:
               schema:
                 items:
-                  $ref: '#/components/schemas/Job'
+                  $ref: '#/components/schemas/JobSummary'
                 type: array
                 title: Response List Jobs Jobs Get
     post:
@@ -58,7 +58,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/JobSpecification'
+              $ref: '#/components/schemas/JobSpecification-Input'
         required: true
       responses:
         '201':
@@ -255,9 +255,265 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/HTTPValidationError'
+  /templates:
+    get:
+      tags:
+      - Templates
+      summary: List Templates
+      operationId: list_templates_templates_get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                items:
+                  type: string
+                type: array
+                title: Response List Templates Templates Get
+  /templates/{name}:
+    post:
+      tags:
+      - Templates
+      summary: Create Template
+      operationId: create_template_templates__name__post
+      parameters:
+      - name: name
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Name
+      - name: body
+        in: query
+        required: true
+        schema:
+          type: string
+          title: Body
+      responses:
+        '201':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+    get:
+      tags:
+      - Templates
+      summary: Get Template
+      operationId: get_template_templates__name__get
+      parameters:
+      - name: name
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Name
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: string
+                title: Response Get Template Templates  Name  Get
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+    put:
+      tags:
+      - Templates
+      summary: Update Template
+      operationId: update_template_templates__name__put
+      parameters:
+      - name: name
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Name
+      - name: body
+        in: query
+        required: true
+        schema:
+          type: string
+          title: Body
+      responses:
+        '204':
+          description: Successful Response
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+    delete:
+      tags:
+      - Templates
+      summary: Delete Template
+      operationId: delete_template_templates__name__delete
+      parameters:
+      - name: name
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Name
+      responses:
+        '204':
+          description: Successful Response
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /templates/{name}/variables:
+    get:
+      tags:
+      - Templates
+      summary: Get Template Variables
+      operationId: get_template_variables_templates__name__variables_get
+      parameters:
+      - name: name
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Name
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+                title: Response Get Template Variables Templates  Name  Variables
+                  Get
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /templates/{name}/render:
+    get:
+      tags:
+      - Templates
+      summary: Render Template Raw
+      operationId: render_template_raw_templates__name__render_get
+      parameters:
+      - name: name
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Name
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: true
+              title: Values
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: string
+                title: Response Render Template Raw Templates  Name  Render Get
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /templates/{name}/render-jobspec:
+    post:
+      tags:
+      - Templates
+      summary: Render Template Jobspec
+      operationId: render_template_jobspec_templates__name__render_jobspec_post
+      parameters:
+      - name: name
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Name
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: true
+              title: Values
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JobSpecification-Output'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /templates/{name}/submit-job:
+    post:
+      tags:
+      - Templates
+      summary: Submit Template Job
+      operationId: submit_template_job_templates__name__submit_job_post
+      parameters:
+      - name: name
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Name
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: true
+              title: Values
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: string
+                format: uuid
+                title: Response Submit Template Job Templates  Name  Submit Job Post
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
 components:
   schemas:
-    DeleteDataParams:
+    DeleteDataParams-Input:
       properties:
         source:
           anyOf:
@@ -284,7 +540,16 @@ components:
       required:
       - source
       title: DeleteDataParams
-    DeleteDataTask:
+    DeleteDataParams-Output:
+      properties:
+        source:
+          type: string
+          title: Source
+      type: object
+      required:
+      - source
+      title: DeleteDataParams
+    DeleteDataTask-Input:
       properties:
         name:
           type: string
@@ -300,7 +565,29 @@ components:
           title: Task Type
           default: Delete Data
         parameters:
-          $ref: '#/components/schemas/DeleteDataParams'
+          $ref: '#/components/schemas/DeleteDataParams-Input'
+      type: object
+      required:
+      - name
+      - parameters
+      title: DeleteDataTask
+    DeleteDataTask-Output:
+      properties:
+        name:
+          type: string
+          title: Name
+        description:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Description
+        task_type:
+          type: string
+          const: Delete Data
+          title: Task Type
+          default: Delete Data
+        parameters:
+          $ref: '#/components/schemas/DeleteDataParams-Output'
       type: object
       required:
       - name
@@ -428,7 +715,7 @@ components:
       - name
       - tasks
       title: Job
-    JobSpecification:
+    JobSpecification-Input:
       properties:
         name:
           type: string
@@ -455,16 +742,16 @@ components:
           items:
             oneOf:
             - $ref: '#/components/schemas/SubprocessTask'
-            - $ref: '#/components/schemas/TransferDataTask'
-            - $ref: '#/components/schemas/DeleteDataTask'
+            - $ref: '#/components/schemas/TransferDataTask-Input'
+            - $ref: '#/components/schemas/DeleteDataTask-Input'
             - $ref: '#/components/schemas/SendMessageTask'
             - $ref: '#/components/schemas/HTTPRequestTask'
             discriminator:
               propertyName: task_type
               mapping:
-                Delete Data: '#/components/schemas/DeleteDataTask'
+                Delete Data: '#/components/schemas/DeleteDataTask-Input'
                 HTTP Request: '#/components/schemas/HTTPRequestTask'
-                Move Data: '#/components/schemas/TransferDataTask'
+                Move Data: '#/components/schemas/TransferDataTask-Input'
                 Send Message: '#/components/schemas/SendMessageTask'
                 Subprocess: '#/components/schemas/SubprocessTask'
           type: array
@@ -474,6 +761,112 @@ components:
       - name
       - tasks
       title: JobSpecification
+    JobSpecification-Output:
+      properties:
+        name:
+          type: string
+          title: Name
+        description:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Description
+        custom_fields:
+          additionalProperties: true
+          type: object
+          title: Custom Fields
+          default: {}
+        time_scheduled:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: string
+            format: time
+          - type: 'null'
+          title: Time Scheduled
+        tasks:
+          items:
+            oneOf:
+            - $ref: '#/components/schemas/SubprocessTask'
+            - $ref: '#/components/schemas/TransferDataTask-Output'
+            - $ref: '#/components/schemas/DeleteDataTask-Output'
+            - $ref: '#/components/schemas/SendMessageTask'
+            - $ref: '#/components/schemas/HTTPRequestTask'
+            discriminator:
+              propertyName: task_type
+              mapping:
+                Delete Data: '#/components/schemas/DeleteDataTask-Output'
+                HTTP Request: '#/components/schemas/HTTPRequestTask'
+                Move Data: '#/components/schemas/TransferDataTask-Output'
+                Send Message: '#/components/schemas/SendMessageTask'
+                Subprocess: '#/components/schemas/SubprocessTask'
+          type: array
+          title: Tasks
+      type: object
+      required:
+      - name
+      - tasks
+      title: JobSpecification
+    JobSummary:
+      properties:
+        id:
+          type: string
+          format: uuid
+          title: Id
+        state:
+          type: string
+          enum:
+          - Not Started
+          - In Progress
+          - Completed
+          - Errored
+          title: State
+        name:
+          type: string
+          title: Name
+        description:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Description
+        custom_fields:
+          additionalProperties: true
+          type: object
+          title: Custom Fields
+          default: {}
+        tasks:
+          items:
+            $ref: '#/components/schemas/TaskSummary'
+          type: array
+          title: Tasks
+        time_submitted:
+          type: string
+          format: date-time
+          title: Time Submitted
+        time_scheduled:
+          type: string
+          format: date-time
+          title: Time Scheduled
+        next_execution_time:
+          type: string
+          format: date-time
+          title: Next Execution Time
+        next_task:
+          anyOf:
+          - type: integer
+          - type: 'null'
+          title: Next Task
+          default: 0
+      type: object
+      required:
+      - id
+      - state
+      - name
+      - tasks
+      - time_submitted
+      - time_scheduled
+      - next_execution_time
+      title: JobSummary
     RunSubprocessParams:
       properties:
         program:
@@ -622,7 +1015,30 @@ components:
       - time_started
       title: TaskExecution
       description: Tracks a single execution of a Task.
-    TransferDataListParams:
+    TaskSummary:
+      properties:
+        id:
+          type: string
+          format: uuid
+          title: Id
+        name:
+          type: string
+          title: Name
+        state:
+          type: string
+          enum:
+          - Not Started
+          - In Progress
+          - Completed
+          - Errored
+          title: State
+      type: object
+      required:
+      - id
+      - name
+      - state
+      title: TaskSummary
+    TransferDataListParams-Input:
       properties:
         source:
           items:
@@ -708,7 +1124,40 @@ components:
       - source
       - destination
       title: TransferDataListParams
-    TransferDataParams:
+    TransferDataListParams-Output:
+      properties:
+        source:
+          items:
+            type: string
+          type: array
+          title: Source
+        destination:
+          type: string
+          title: Destination
+        options:
+          additionalProperties: true
+          type: object
+          title: Options
+          default: {}
+        source_base_dir:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Source Base Dir
+        preserve_structure:
+          type: boolean
+          title: Preserve Structure
+          default: true
+        parallel:
+          type: boolean
+          title: Parallel
+          default: false
+      type: object
+      required:
+      - source
+      - destination
+      title: TransferDataListParams
+    TransferDataParams-Input:
       properties:
         source:
           anyOf:
@@ -762,7 +1211,25 @@ components:
       - source
       - destination
       title: TransferDataParams
-    TransferDataTask:
+    TransferDataParams-Output:
+      properties:
+        source:
+          type: string
+          title: Source
+        destination:
+          type: string
+          title: Destination
+        options:
+          additionalProperties: true
+          type: object
+          title: Options
+          default: {}
+      type: object
+      required:
+      - source
+      - destination
+      title: TransferDataParams
+    TransferDataTask-Input:
       properties:
         name:
           type: string
@@ -779,8 +1246,33 @@ components:
           default: Move Data
         parameters:
           anyOf:
-          - $ref: '#/components/schemas/TransferDataParams'
-          - $ref: '#/components/schemas/TransferDataListParams'
+          - $ref: '#/components/schemas/TransferDataParams-Input'
+          - $ref: '#/components/schemas/TransferDataListParams-Input'
+          title: Parameters
+      type: object
+      required:
+      - name
+      - parameters
+      title: TransferDataTask
+    TransferDataTask-Output:
+      properties:
+        name:
+          type: string
+          title: Name
+        description:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Description
+        task_type:
+          type: string
+          const: Move Data
+          title: Task Type
+          default: Move Data
+        parameters:
+          anyOf:
+          - $ref: '#/components/schemas/TransferDataParams-Output'
+          - $ref: '#/components/schemas/TransferDataListParams-Output'
           title: Parameters
       type: object
       required:

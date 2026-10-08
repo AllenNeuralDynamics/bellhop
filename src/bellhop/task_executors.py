@@ -1,5 +1,4 @@
-""""""
-
+from collections.abc import Mapping
 from typing import Any, Protocol
 
 import requests
@@ -60,7 +59,7 @@ def _http_request(params: HTTPRequestParams, log_queue: LogQueue) -> None:
 
 ### Task Executor Registry
 
-task_executor_registry: dict[TaskTypes, TaskExecutorFn] = {
+task_executor_registry: Mapping[TaskTypes, TaskExecutorFn] = {
     "Move Data": _move_data,
     "Delete Data": _delete_data,
     "Send Message": _send_message,

@@ -35,13 +35,19 @@ def _make_dummy_data(folder: Path) -> None:
         path.write_bytes(os.urandom(50 * 1_000))
 
 
-def _make_job_spec(
-    label: str,
-    custom_fields: dict,
+def make_job_spec(
     source_dir: Path,
     dest_dir: Path,
+    *,
+    name: str = "Bellhop self-test",
+    description: str = "Automated self-test job",
+    custom_fields: dict | None = None,
 ) -> JobSpecification:
-    """Build a JobSpecification that moves pre-created files, then deletes both locations."""
+    """Build a dummy JobSpecification that echoes, moves files, verifies, then deletes both locations.
+
+    Shared by the self-test (which runs one such job for real) and the demo data
+    generator (which fills a database with many historical copies).
+    """
 
     echo_task = SubprocessTask(
         name="Echo",
@@ -78,9 +84,9 @@ def _make_job_spec(
     )
 
     return JobSpecification(
-        name=f"Bellhop self-test [{label}]",
-        description="Automated self-test job",
-        custom_fields={"self_test": True, **custom_fields},
+        name=name,
+        description=description,
+        custom_fields=custom_fields or {},
         tasks=[echo_task, move_task, verify_task, delete_source_task, delete_dest_task],
     )
 
@@ -99,7 +105,7 @@ def _wait_for_terminal(job_id: uuid.UUID, timeout: float):
 def run_self_test(
     *,
     working_dir: Path | None = None,
-    label: str = "default",
+    label: str | None = None,
     timeout: float = 60.0,
     custom_fields: dict | None = None,
 ):
@@ -116,11 +122,11 @@ def run_self_test(
 
     _make_dummy_data(source_dir)
 
-    job_spec = _make_job_spec(
-        label=label,
-        custom_fields=custom_fields,
-        source_dir=source_dir,
-        dest_dir=dest_dir,
+    job_spec = make_job_spec(
+        source_dir,
+        dest_dir,
+        name=f"Bellhop self-test {run_id}",
+        custom_fields={"self_test": True, **custom_fields},
     )
     job_id = client.submit_job(job_spec)
     print(f"Self-test job submitted: {job_id}")

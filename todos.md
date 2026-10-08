@@ -5,6 +5,8 @@ Self tests and demos
 
 UI
 - Submit new job
+  - Based on template (show template, inputs for fields, and rendered jobspec)
+  - non-template manual mode, with job writer form
 - Job writer form (autofill fields and stuff)
 - Edit task/job and send update to engine
 - Show job/task history, maybe integrated with execution history
@@ -13,10 +15,10 @@ UI
 - Run self test/demo from ui
 - view/edit config?
 - Not sure the auto-refresh is the best UX yet, may need to revisit
-- Maybe separate job detail component from job table in code, like different file
 - More visual separation between job table and detail
 - Clicking on task badge in table row should open task detail
 - Currently selected task should more clearly visually align with task detail
+- Currently selected job should have a highlighted row in table
 
 DB
 - handle/normalize timezones
@@ -37,9 +39,11 @@ General:
   - For a dataset of type X, the job will always do the same set of tasks but small things will differ.
   - For instance, "transfer data from C://data/{{ barcode }}/data.tif to s3://{{ bucket }}/data/{{ barcode }}.tif"
   - Templates should be saveable/updateable per bellhop instance, and jobs can be submitted by referencing the template and providing the necessary kwargs to fill it in
+- Add CLI to client so you can talk to the API from command-line
 - Integrate apprise for notifications
 - Rename dropbox to mailbox
 - Update tests to use normal/realistic terminology and examples
+- Make sure unit tests cover newly-added functionality, remove out of date tests, and make tests short and manageable
 
 Docs:
 - Update docs and diagrams with new terminology
