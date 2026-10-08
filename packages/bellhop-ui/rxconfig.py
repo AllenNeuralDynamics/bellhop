@@ -7,4 +7,5 @@ config = rx.Config(
         rx.plugins.TailwindV4Plugin(),
         rx.plugins.RadixThemesPlugin(),
     ],
+    frontend_port=8311
 )
