@@ -71,3 +71,25 @@ class Job(BaseModel):
             next_execution_time=time_scheduled,
             **specification.model_dump(exclude={"tasks", "time_scheduled"}, exclude_none=True),
         )
+
+
+## Lightweight list-view models (no execution history/logs)
+
+
+class TaskSummary(BaseModel):
+    id: uuid.UUID
+    name: str
+    state: TaskStates
+
+
+class JobSummary(BaseModel):
+    id: uuid.UUID
+    state: TaskStates
+    name: str
+    description: str | None = None
+    custom_fields: dict = {}
+    tasks: list[TaskSummary]
+    time_submitted: datetime
+    time_scheduled: datetime
+    next_execution_time: datetime
+    next_task: int | None = 0

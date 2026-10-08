@@ -2,11 +2,11 @@ import uuid
 from datetime import datetime
 from typing import Literal
 
-from bellhop_models.database import Job, Task, TaskExecution, TaskStates
+from bellhop_models.database import Job, JobSummary, Task, TaskExecution, TaskStates, TaskSummary
 from bellhop_models.specifications import AnyTaskAdapter
 from pydantic import BaseModel
-from sqlalchemy import JSON, DateTime, ForeignKey, and_, create_engine, select
-from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship, sessionmaker
+from sqlalchemy import JSON, DateTime, ForeignKey, and_, create_engine, event, select
+from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship, selectinload, sessionmaker
 
 
 class Base(DeclarativeBase):
@@ -67,6 +67,20 @@ class JobSql(Base):
         row.tasks = [TaskSql.from_model(t, job.id) for t in job.tasks]
         return row
 
+    def to_summary(self) -> JobSummary:
+        return JobSummary(
+            id=self.id,
+            state=self.state,
+            name=self.name,
+            description=self.description,
+            custom_fields=self.custom_fields,
+            tasks=[t.to_summary() for t in self.tasks],
+            time_submitted=self.time_submitted,
+            time_scheduled=self.time_scheduled,
+            next_execution_time=self.next_execution_time,
+            next_task=self.next_task,
+        )
+
 
 class TaskSql(Base):
     __tablename__ = "tasks"
@@ -94,6 +108,9 @@ class TaskSql(Base):
             task_type=self.task_type,
             parameters=spec.parameters,
         )
+
+    def to_summary(self) -> TaskSummary:
+        return TaskSummary(id=self.id, name=self.name, state=self.state)
 
     @classmethod
     def from_model(cls, task: Task, job_id: uuid.UUID) -> "TaskSql":
@@ -154,10 +171,21 @@ DATABASE_FILE = "bellhop_jobs.db"
 class Database:
     def __init__(self, db_file: str = DATABASE_FILE):
         self._db_file = db_file
-        url = "sqlite:///:memory:" if db_file == ":memory:" else f"sqlite:///{db_file}"
-        _engine = create_engine(url)
+        is_memory = db_file == ":memory:"
+        url = "sqlite:///:memory:" if is_memory else f"sqlite:///{db_file}"
+        # check_same_thread=False lets pooled connections be reused across FastAPI's threadpool workers
+        _engine = create_engine(url, connect_args={"check_same_thread": False})
+        if not is_memory:
+            event.listen(_engine, "connect", self._set_sqlite_pragmas)
         Base.metadata.create_all(_engine)
         self._Session = sessionmaker(autocommit=False, autoflush=False, bind=_engine)
+
+    @staticmethod
+    def _set_sqlite_pragmas(dbapi_conn, _) -> None:
+        cursor = dbapi_conn.cursor()
+        cursor.execute("PRAGMA journal_mode=WAL")  # concurrent readers during a write
+        cursor.execute("PRAGMA busy_timeout=5000")  # wait instead of failing on lock contention
+        cursor.close()
 
     def create_job(self, job: Job) -> Job:
         with self._Session() as session:
@@ -169,11 +197,21 @@ class Database:
 
     def get_job(self, job_id: uuid.UUID) -> Job | None:
         with self._Session() as session:
-            row = session.get(JobSql, job_id)
+            row = session.get(
+                JobSql,
+                job_id,
+                options=[
+                    selectinload(JobSql.tasks),
+                    selectinload(JobSql.history).selectinload(TaskExecutionSql.task),
+                ],
+            )
             return row.to_model() if row else None
 
-    def list_jobs(self) -> list[Job]:
-        return self.query_jobs()
+    def list_jobs(self) -> list[JobSummary]:
+        statement = select(JobSql).options(selectinload(JobSql.tasks)).order_by(JobSql.time_submitted.desc())
+        with self._Session() as session:
+            rows = session.execute(statement).scalars().all()
+            return [r.to_summary() for r in rows]
 
     def query_jobs(
         self,
@@ -213,6 +251,10 @@ class Database:
                 statement = statement.order_by(
                     getattr(JobSql, col).desc() if direction == "desc" else getattr(JobSql, col)
                 )
+        statement = statement.options(
+            selectinload(JobSql.tasks),
+            selectinload(JobSql.history).selectinload(TaskExecutionSql.task),
+        )
 
         with self._Session() as session:
             rows = session.execute(statement).scalars().all()

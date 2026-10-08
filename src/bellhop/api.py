@@ -5,15 +5,17 @@ from contextlib import asynccontextmanager
 from typing import Annotated
 
 import uvicorn
-from bellhop_models.database import Job, TaskExecution
+from bellhop_models.database import Job, JobSummary, TaskExecution
 from bellhop_models.specifications import JobSpecification
 from fastapi import Depends, FastAPI, HTTPException
 from fastapi.responses import StreamingResponse
 from loguru import logger
+from pydantic import ValidationError
 
 from bellhop.config import Config
 from bellhop.dropbox import JobDropbox
 from bellhop.engine import Engine
+from bellhop.job_templates import TemplateManager
 
 
 @asynccontextmanager
@@ -22,6 +24,7 @@ async def lifespan(app: FastAPI):
     config = app.state.config
     app.state.engine = Engine(db_file=str(config.database_file)).start()
     app.state.dropbox = JobDropbox(app.state.engine, config.dropbox_dir).start()
+    app.state.template_manager = TemplateManager(config.job_templates_dir)
     yield
     app.state.dropbox.stop()
     app.state.engine.shutdown()
@@ -37,17 +40,24 @@ app = FastAPI(
 
 
 @app.get("/", tags=["Health"])
-def health_check() -> dict[str, str]:
+async def health_check() -> dict[str, str]:
     return {"status": "ok"}
 
 
 @app.get("/environment")
-def get_environment() -> dict[str, str]:
+async def get_environment() -> dict[str, str]:
     return {var: os.getenv(var, "") for var in app.state.config.env_vars_to_show}
+
+
+## Dependency injection utilities
 
 
 def get_engine() -> Engine:
     return app.state.engine
+
+
+def get_template_manager() -> TemplateManager:
+    return app.state.template_manager
 
 
 # ---------------------------------------------------------------------------
@@ -56,7 +66,7 @@ def get_engine() -> Engine:
 
 
 @app.get("/jobs", tags=["Jobs"])
-def list_jobs(engine: Annotated[Engine, Depends(get_engine)]) -> list[Job]:
+def list_jobs(engine: Annotated[Engine, Depends(get_engine)]) -> list[JobSummary]:
     return engine.db.list_jobs()
 
 
@@ -144,6 +154,95 @@ async def stream_execution_logs(
     return StreamingResponse(generate(), media_type="text/event-stream")
 
 
-def main() -> None:
-    app.state.config = Config()
+# ---------------------------------------------------------------------------
+# Templates
+# ---------------------------------------------------------------------------
+
+
+@app.get("/templates", tags=["Templates"])
+def list_templates(manager: Annotated[TemplateManager, Depends(get_template_manager)]) -> list[str]:
+    return manager.list_templates()
+
+
+@app.post("/templates/{name}", tags=["Templates"], status_code=201)
+def create_template(name: str, body: str, manager: Annotated[TemplateManager, Depends(get_template_manager)]) -> None:
+    try:
+        manager.create_template(name, body)
+    except FileExistsError:
+        raise HTTPException(status_code=409, detail="Template already exists")
+
+
+@app.get("/templates/{name}", tags=["Templates"])
+def get_template(name: str, manager: Annotated[TemplateManager, Depends(get_template_manager)]) -> str:
+    try:
+        return manager.read_template(name)
+    except FileNotFoundError:
+        raise HTTPException(status_code=404, detail="Template not found")
+
+
+@app.put("/templates/{name}", tags=["Templates"], status_code=204)
+def update_template(name: str, body: str, manager: Annotated[TemplateManager, Depends(get_template_manager)]) -> None:
+    try:
+        manager.update_template(name, body)
+    except FileNotFoundError:
+        raise HTTPException(status_code=404, detail="Template not found")
+
+
+@app.get("/templates/{name}/variables", tags=["Templates"])
+def get_template_variables(name: str, manager: Annotated[TemplateManager, Depends(get_template_manager)]) -> list[str]:
+    try:
+        return manager.get_template_variables(name)
+    except FileNotFoundError:
+        raise HTTPException(status_code=404, detail="Template not found")
+
+
+@app.get("/templates/{name}/render", tags=["Templates"])
+def render_template_raw(
+    name: str, values: dict, manager: Annotated[TemplateManager, Depends(get_template_manager)]
+) -> str:
+    try:
+        return manager.render_template_raw(name, values)
+    except FileNotFoundError:
+        raise HTTPException(status_code=404, detail="Template not found")
+
+
+@app.post("/templates/{name}/render-jobspec", tags=["Templates"])
+def render_template_jobspec(
+    name: str, values: dict, manager: Annotated[TemplateManager, Depends(get_template_manager)]
+) -> JobSpecification:
+    try:
+        return manager.render_template_to_jobspec(name, values)
+    except FileNotFoundError:
+        raise HTTPException(status_code=404, detail="Template not found")
+    except ValidationError as e:
+        raise HTTPException(status_code=422, detail=f"Validation error: {e}")
+
+
+@app.delete("/templates/{name}", tags=["Templates"], status_code=204)
+def delete_template(name: str, manager: Annotated[TemplateManager, Depends(get_template_manager)]) -> None:
+    try:
+        manager.delete_template(name)
+    except FileNotFoundError:
+        raise HTTPException(status_code=404, detail="Template not found")
+
+
+@app.post("/templates/{name}/submit-job", tags=["Templates"])
+def submit_template_job(
+    name: str,
+    values: dict,
+    manager: Annotated[TemplateManager, Depends(get_template_manager)],
+    engine: Annotated[Engine, Depends(get_engine)],
+) -> uuid.UUID:
+    try:
+        job_spec = manager.render_template_to_jobspec(name, values)
+        return engine.submit_job(job_spec)
+    except FileNotFoundError:
+        raise HTTPException(status_code=404, detail="Template not found")
+    except ValidationError as e:
+        raise HTTPException(status_code=422, detail=f"Validation error: {e}")
+
+
+def main(**kwargs) -> None:
+    app.state.config = Config(**kwargs)
+
     uvicorn.run(app, host="0.0.0.0", port=app.state.config.api_port)

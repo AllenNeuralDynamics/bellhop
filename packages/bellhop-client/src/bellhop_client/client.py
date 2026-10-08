@@ -3,10 +3,10 @@ import uuid
 from typing import Self
 
 import httpx
-from bellhop_models.database import Job, TaskExecution
+from bellhop_models.database import Job, JobSummary, TaskExecution
 from bellhop_models.specifications import JobSpecification
 
-BASE_URL = "http://localhost:8311"
+BASE_URL = "http://localhost:8312"
 
 
 class BellhopClient:
@@ -30,9 +30,9 @@ class BellhopClient:
     def get_environment(self) -> dict[str, str]:
         return self._client.get("/environment").raise_for_status().json()
 
-    def list_jobs(self) -> list[Job]:
+    def list_jobs(self) -> list[JobSummary]:
         response = self._client.get("/jobs")
-        return [Job.model_validate(item) for item in response.raise_for_status().json()]
+        return [JobSummary.model_validate(item) for item in response.raise_for_status().json()]
 
     def submit_job(self, job_spec: JobSpecification) -> uuid.UUID:
         response = self._client.post("/jobs", json=job_spec.model_dump(mode="json"))
@@ -88,14 +88,16 @@ class AsyncBellhopClient:
         await self.aclose()
 
     async def health_check(self) -> dict[str, str]:
-        return (await self._client.get("/")).raise_for_status().json()
+        response = await self._client.get("/")
+        print(response, response.text)
+        return response.raise_for_status().json()
 
     async def get_environment(self) -> dict[str, str]:
         return (await self._client.get("/environment")).raise_for_status().json()
 
-    async def list_jobs(self) -> list[Job]:
+    async def list_jobs(self) -> list[JobSummary]:
         response = await self._client.get("/jobs")
-        return [Job.model_validate(item) for item in response.raise_for_status().json()]
+        return [JobSummary.model_validate(item) for item in response.raise_for_status().json()]
 
     async def submit_job(self, job_spec: JobSpecification) -> uuid.UUID:
         response = await self._client.post("/jobs", json=job_spec.model_dump(mode="json"))
@@ -146,7 +148,7 @@ def get_environment() -> dict[str, str]:
         return client.get_environment()
 
 
-def list_jobs() -> list[Job]:
+def list_jobs() -> list[JobSummary]:
     with BellhopClient() as client:
         return client.list_jobs()
 
