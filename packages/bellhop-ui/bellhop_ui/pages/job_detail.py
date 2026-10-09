@@ -2,8 +2,8 @@ import reflex as rx
 from bellhop_models.database import Task, TaskExecution
 from reflex_resizable_panels import resizable_panels as rzp
 
+from bellhop_ui.pages.job_list_state import JobTableState
 from bellhop_ui.pages.shared import pretty_resize_handle, state_badge
-from bellhop_ui.state import State
 
 
 def execution_summary(execution: TaskExecution) -> rx.Component:
@@ -60,7 +60,7 @@ def execution_accordion_item(execution: TaskExecution) -> rx.Component:
 
 
 def task_pill(task: Task) -> rx.Component:
-    is_selected = task.id == State.selected_task_id
+    is_selected = task.id == JobTableState.selected_task_id
     return rx.card(
         rx.vstack(
             rx.hstack(
@@ -73,7 +73,7 @@ def task_pill(task: Task) -> rx.Component:
             spacing="1",
             align="start",
         ),
-        on_click=State.set_selected_task_id(task.id),
+        on_click=JobTableState.set_selected_task_id(task.id),
         cursor="pointer",
         outline=rx.cond(is_selected, "2px solid var(--accent-9)", "none"),
         min_width="160px",
@@ -85,16 +85,20 @@ def job_detail_section() -> rx.Component:
         rx.vstack(
             rx.grid(
                 rx.hstack(
-                    rx.heading(State.selected_job.name, size="4"),
-                    state_badge(State.selected_job.state),
+                    rx.heading(JobTableState.selected_job.name, size="4"),
+                    state_badge(JobTableState.selected_job.state),
                     align="center",
                 ),
                 rx.vstack(
-                    rx.text(State.selected_job.description, size="2"),
+                    rx.text(JobTableState.selected_job.description, size="2"),
                     rx.hstack(
-                        rx.text("Submitted: ", State.selected_job.time_submitted, size="1", color="gray"),
-                        rx.text("Originally scheduled: ", State.selected_job.time_scheduled, size="1", color="gray"),
-                        rx.text("Next execution: ", State.selected_job.next_execution_time, size="1", color="gray"),
+                        rx.text("Submitted: ", JobTableState.selected_job.time_submitted, size="1", color="gray"),
+                        rx.text(
+                            "Originally scheduled: ", JobTableState.selected_job.time_scheduled, size="1", color="gray"
+                        ),
+                        rx.text(
+                            "Next execution: ", JobTableState.selected_job.next_execution_time, size="1", color="gray"
+                        ),
                         spacing="3",
                     ),
                     spacing="1",
@@ -102,23 +106,23 @@ def job_detail_section() -> rx.Component:
                 ),
                 rx.hstack(
                     rx.cond(
-                        State.selected_job.state == "Not Started",
+                        JobTableState.selected_job.state == "Not Started",
                         rx.button(
                             "Execute Now",
-                            on_click=State.execute_now(State.selected_job.id),
+                            on_click=JobTableState.execute_now(JobTableState.selected_job.id),
                             size="1",
                         ),
                         rx.fragment(),
                     ),
                     rx.button(
                         "Retry",
-                        on_click=State.retry_job(State.selected_job.id),
+                        on_click=JobTableState.retry_job(JobTableState.selected_job.id),
                         size="1",
                         variant="soft",
                     ),
                     rx.button(
                         "Abort",
-                        on_click=State.abort_job(State.selected_job.id),
+                        on_click=JobTableState.abort_job(JobTableState.selected_job.id),
                         size="1",
                         color_scheme="red",
                         variant="soft",
@@ -132,7 +136,7 @@ def job_detail_section() -> rx.Component:
             ),
             rx.scroll_area(
                 rx.hstack(
-                    rx.foreach(State.selected_job_tasks, task_pill),
+                    rx.foreach(JobTableState.selected_job_tasks, task_pill),
                     spacing="3",
                     padding_bottom="2",
                     justify="center",
@@ -141,13 +145,13 @@ def job_detail_section() -> rx.Component:
                 width="100%",
             ),
             rx.cond(
-                State.selected_task_id,
+                JobTableState.selected_task_id,
                 rx.box(
                     rzp.group(
                         rzp.panel(
                             rx.scroll_area(
                                 rx.code_block(
-                                    State.selected_task_yaml,
+                                    JobTableState.selected_task_yaml,
                                     language="yaml",
                                     width="100%",
                                     size="1",
@@ -162,15 +166,15 @@ def job_detail_section() -> rx.Component:
                         rzp.panel(
                             rx.box(
                                 rx.cond(
-                                    State.selected_task_executions,
+                                    JobTableState.selected_task_executions,
                                     rx.accordion.root(
                                         rx.foreach(
-                                            State.selected_task_executions_most_recent_first,
+                                            JobTableState.selected_task_executions_most_recent_first,
                                             execution_accordion_item,
                                         ),
                                         type="single",
-                                        value=State.selected_execution_id,
-                                        on_value_change=State.set_selected_execution_id,
+                                        value=JobTableState.selected_execution_id,
+                                        on_value_change=JobTableState.set_selected_execution_id,
                                         collapsible=True,
                                         variant="outline",
                                         width="100%",
