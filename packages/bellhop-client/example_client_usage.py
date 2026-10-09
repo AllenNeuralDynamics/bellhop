@@ -2,8 +2,9 @@ import time
 
 from bellhop_models.specifications import JobSpecification, RunSubprocessParams, SubprocessTask
 
-from bellhop_client import client
+from bellhop_client import BellhopClient
 
+client = BellhopClient()
 print("Health Check: ", client.health_check())
 
 job_spec = JobSpecification(

@@ -6,7 +6,7 @@ import pytest
 from bellhop_models.database import Job
 from bellhop_models.specifications import JobSpecification, RunSubprocessParams, SubprocessTask
 
-from bellhop_client.client import AsyncBellhopClient, BellhopClient
+from bellhop_client import AsyncBellhopClient, BellhopClient
 
 
 def make_job() -> Job:

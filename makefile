@@ -9,6 +9,11 @@ api_spec:
 
 schemas: config_schema api_spec
 
+generate-client:
+	uv run python scripts/generate_client.py
+	uvx ruff check --fix packages/bellhop-client/src/bellhop_client/
+	uvx ruff format packages/bellhop-client/src/bellhop_client/
+
 api:
 	uv run bellhop
 
