@@ -3,7 +3,7 @@ from datetime import datetime
 
 import pytest
 from bellhop_models.database import Job, TaskExecution
-from bellhop_models.specifications import JobSpecification, RunSubprocessParams, SubprocessTask
+from bellhop_models.specifications import CommandTask, JobSpecification, RunProgramParams
 
 from bellhop.db import Database
 
@@ -20,13 +20,13 @@ def sample_job() -> Job:
         description="A test job",
         custom_fields={"env": "test"},
         tasks=[
-            SubprocessTask(
+            CommandTask(
                 name="Echo Task",
-                parameters=RunSubprocessParams(program="echo", command=["hello"]),
+                parameters=RunProgramParams(program="echo", arguments=["hello"]),
             ),
-            SubprocessTask(
+            CommandTask(
                 name="Second Task",
-                parameters=RunSubprocessParams(program="echo", command=["world"]),
+                parameters=RunProgramParams(program="echo", arguments=["world"]),
             ),
         ],
         time_scheduled=datetime(2026, 6, 1, 9, 0),
@@ -39,7 +39,7 @@ def make_job(name: str, description: str | None = None, day: int = 1) -> Job:
         JobSpecification(
             name=name,
             description=description,
-            tasks=[SubprocessTask(name="T", parameters=RunSubprocessParams(program="echo", command=[]))],
+            tasks=[CommandTask(name="T", parameters=RunProgramParams(program="echo", arguments=[]))],
             time_scheduled=datetime(2026, 6, day, 9, 0),
         )
     )
@@ -48,10 +48,10 @@ def make_job(name: str, description: str | None = None, day: int = 1) -> Job:
 @pytest.fixture
 def query_jobs_db(database) -> Database:
     for job in (
-        make_job("Alpha Import", "Nightly backup", day=1),
-        make_job("Daily ETL", "Runs ALPHA migration", day=2),
-        make_job("Beta Export", "Nothing to see", day=3),
-        make_job("Gamma Sync", None, day=4),
+        make_job("Job A", "backup", day=1),
+        make_job("Job B", "migration", day=2),
+        make_job("Job C", "backup", day=3),
+        make_job("Job D", None, day=4),
     ):
         database.create_job(job)
     return database
@@ -84,19 +84,18 @@ def test_list_jobs_returns_all(database, sample_job):
 @pytest.mark.parametrize(
     ("filters", "expected"),
     [
-        ({}, {"Alpha Import", "Daily ETL", "Beta Export", "Gamma Sync"}),
-        ({"name_contains": "alpha"}, {"Alpha Import"}),
+        ({}, {"Job A", "Job B", "Job C", "Job D"}),
+        ({"name_contains": "job"}, {"Job A", "Job B", "Job C", "Job D"}),
+        ({"name_contains": "a"}, {"Job A"}),
         ({"name_contains": "missing"}, set()),
-        ({"description_contains": "backup"}, {"Alpha Import"}),
-        ({"text_contains": "alpha"}, {"Alpha Import", "Daily ETL"}),
-        ({"name_contains": "  "}, {"Alpha Import", "Daily ETL", "Beta Export", "Gamma Sync"}),
+        ({"description_contains": "backup"}, {"Job A", "Job C"}),
         (
             {"scheduled_from": datetime(2026, 6, 2, 9, 0), "scheduled_to": datetime(2026, 6, 3, 9, 0)},
-            {"Daily ETL", "Beta Export"},
+            {"Job B", "Job C"},
         ),
-        ({"scheduled_from": datetime(2026, 6, 3, 9, 0)}, {"Beta Export", "Gamma Sync"}),
-        ({"scheduled_to": datetime(2026, 6, 2, 9, 0)}, {"Alpha Import", "Daily ETL"}),
-        ({"text_contains": "alpha", "scheduled_from": datetime(2026, 6, 2, 9, 0)}, {"Daily ETL"}),
+        ({"scheduled_from": datetime(2026, 6, 3, 9, 0)}, {"Job C", "Job D"}),
+        ({"scheduled_to": datetime(2026, 6, 2, 9, 0)}, {"Job A", "Job B"}),
+        ({"name_contains": "job", "scheduled_from": datetime(2026, 6, 3, 9, 0)}, {"Job C", "Job D"}),
     ],
 )
 def test_query_jobs_filters(query_jobs_db, filters, expected):

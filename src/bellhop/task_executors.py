@@ -5,7 +5,8 @@ import requests
 from bellhop_models.specifications import (
     DeleteDataParams,
     HTTPRequestParams,
-    RunSubprocessParams,
+    RunCommandParams,
+    RunProgramParams,
     SendMessageParams,
     TaskTypes,
     TransferDataListParams,
@@ -48,8 +49,19 @@ def _send_message(params: SendMessageParams, log_queue: LogQueue) -> None:
     send_email(**params.model_dump())
 
 
-def _run_subprocess(params: RunSubprocessParams, log_queue: LogQueue) -> None:
-    run_live_process(params.program, params.command, log_queue)
+# def _run_subprocess(params: RunSubprocessParams, log_queue: LogQueue) -> None:
+#     run_live_process(params.command, log_queue, params.program)
+
+
+def _run_command(params: RunCommandParams | RunProgramParams, log_queue: LogQueue) -> None:
+    if isinstance(params, RunProgramParams):
+        run_live_process([params.program] + params.arguments, log_queue, shell=False, cwd=params.cwd)
+    elif isinstance(params, RunCommandParams):
+        if isinstance(params.command, list):
+            for cmd in params.command:
+                run_live_process(cmd, log_queue, shell=True, cwd=params.cwd)
+        else:
+            run_live_process(params.command, log_queue, shell=True, cwd=params.cwd)
 
 
 def _http_request(params: HTTPRequestParams, log_queue: LogQueue) -> None:
@@ -63,6 +75,7 @@ task_executor_registry: Mapping[TaskTypes, TaskExecutorFn] = {
     "Move Data": _move_data,
     "Delete Data": _delete_data,
     "Send Message": _send_message,
-    "Subprocess": _run_subprocess,
+    # "Subprocess": _run_subprocess,
+    "Command": _run_command,
     "HTTP Request": _http_request,
 }

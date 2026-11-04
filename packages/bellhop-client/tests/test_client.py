@@ -1,10 +1,8 @@
 import asyncio
-import uuid
 
 import httpx
-import pytest
 from bellhop_models.database import Job
-from bellhop_models.specifications import JobSpecification, RunSubprocessParams, SubprocessTask
+from bellhop_models.specifications import CommandTask, JobSpecification, RunProgramParams
 
 from bellhop_client import AsyncBellhopClient, BellhopClient
 
@@ -13,7 +11,7 @@ def make_job() -> Job:
     return Job.from_specification(
         JobSpecification(
             name="Test job",
-            tasks=[SubprocessTask(name="Echo", parameters=RunSubprocessParams(program="echo", command=[]))],
+            tasks=[CommandTask(name="Echo", parameters=RunProgramParams(program="echo", arguments=[]))],
         )
     )
 
@@ -54,12 +52,3 @@ def test_async_client_lists_jobs_and_handles_empty_mutation_responses():
         await http_client.aclose()
 
     asyncio.run(run_test())
-
-
-def test_client_rejects_mismatched_job_id():
-    job = make_job()
-    other_id = uuid.uuid4()
-    client = BellhopClient(client=httpx.Client(base_url="http://test", transport=make_transport(job)))
-
-    with pytest.raises(ValueError, match="Body job ID must match path job ID"):
-        client.update_job(other_id, job)

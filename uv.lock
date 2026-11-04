@@ -354,8 +354,10 @@ version = "0.1.0"
 source = { editable = "packages/bellhop-ui" }
 dependencies = [
     { name = "bellhop-client" },
+    { name = "bellhop-models" },
     { name = "pyyaml" },
     { name = "reflex" },
+    { name = "reflex-monaco" },
     { name = "reflex-otel" },
     { name = "reflex-resizable-panels" },
 ]
@@ -363,8 +365,10 @@ dependencies = [
 [package.metadata]
 requires-dist = [
     { name = "bellhop-client", editable = "packages/bellhop-client" },
+    { name = "bellhop-models", editable = "packages/bellhop-models" },
     { name = "pyyaml", specifier = ">=6.0.3" },
     { name = "reflex", specifier = ">=0.9.8" },
+    { name = "reflex-monaco", specifier = ">=0.0.3" },
     { name = "reflex-otel" },
     { name = "reflex-resizable-panels", specifier = ">=0.0.1" },
 ]
@@ -2291,6 +2295,18 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/93/e3/d6bd000a03f01a7d7e7058ba98918f089f568a3bcdac4a4c1d151cbcf5f7/reflex_hosting_cli-0.2.0.tar.gz", hash = "sha256:c97b1f62afa26a664966477f703433181ce56245193bc4c8ae1659b5f6877f5b", size = 79403, upload-time = "2026-10-08T22:20:38.986Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/f7/fe/eac480efe195977aa17ea39088cfb870ee1a0c0fce7f91c3527bf57da5b8/reflex_hosting_cli-0.2.0-py3-none-any.whl", hash = "sha256:ccc3cb425501c4b1d4de863c8a026d16358ca5a2337ae0ce93105d193a01d25c", size = 88820, upload-time = "2026-10-08T22:20:37.848Z" },
+]
+
+[[package]]
+name = "reflex-monaco"
+version = "0.0.3"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "reflex" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/96/ff/b038bda7378df1f11950d2161c7e5fd9e554a3152229a651b2e62bd41682/reflex_monaco-0.0.3.tar.gz", hash = "sha256:aa278396778ee55277fe7a42a44f31e3119c9d22bc44988c9e1ec2dbbf6100c1", size = 3050, upload-time = "2025-04-08T20:41:31.419Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/da/a3/9dbfbe70bdc62956029686428a30a7d4d2dc501b11a41af2738fb74c75b3/reflex_monaco-0.0.3-py3-none-any.whl", hash = "sha256:8fcc562f41271e9195cc1980ac5ca7ecbf319791fbd59209aecbc14b542dbb5f", size = 3024, upload-time = "2025-04-08T20:41:30.156Z" },
 ]
 
 [[package]]

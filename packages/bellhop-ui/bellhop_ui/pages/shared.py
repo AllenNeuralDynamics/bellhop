@@ -102,12 +102,15 @@ def settings_dialog() -> rx.Component:
 
 def title_section() -> rx.Component:
     return rx.hstack(
-        rx.heading("Bellhop", size=APP_TITLE_SIZE, align_self="center"),
+        rx.heading("Bellhop", size=APP_TITLE_SIZE, align_self="center", padding_left="15px"),
         rx.spacer(),
         rx.cond(
             State.connected,
             rx.vstack(rx.foreach(State.api_environment_info, lambda item: rx.text(item[1], size=CONTENT_HEADER_SIZE))),
-            rx.text("Disconnected", size=CONTENT_HEADER_SIZE, align_self="center"),
+            rx.vstack(
+                rx.text("Disconnected", size=CONTENT_HEADER_SIZE, align_self="center"),
+                rx.button(rx.icon("refresh_ccw"), on_click=State.check_connection, size="1", align_self="center"),
+            ),
         ),
         rx.menu.root(
             rx.menu.trigger(rx.button(rx.icon("menu"))),
@@ -119,16 +122,59 @@ def title_section() -> rx.Component:
     )
 
 
+def side_bar_button(icon: str, label: str, route: str) -> rx.Component:
+    return rx.tooltip(
+        rx.link(
+            rx.button(
+                rx.icon(icon, size=ICON_SIZE),
+                variant="ghost",
+                color_scheme="gray",
+                size="3",
+                width="40px",
+                height="40px",
+            ),
+            href=route,
+        ),
+        content=label,
+        side="right",
+    )
+
+
+def side_bar() -> rx.Component:
+    return rx.vstack(
+        side_bar_button("table", "Jobs", "/"),
+        side_bar_button("Plus", "Templates", "/templates"),
+        spacing="3",
+        align="center",
+        padding="10px",
+        background_color=rx.color("gray", 2),
+        height="100%",
+    )
+
+
 def page_template(page: Callable[[], rx.Component]) -> rx.Component:
     return rx.vstack(
         title_section(),
         settings_dialog(),
-        rx.box(
-            page(),
-            align="center",
-            spacing="6",
+        rx.hstack(
+            side_bar(),
+            rx.box(
+                page(),
+                align="center",
+                spacing="6",
+                width="100%",
+                height="100%",
+                overflow_y="auto",
+                style={"padding": "24px"},
+            ),
+            spacing="0",
             width="100%",
-            min_height="100vh",
-            style={"padding": "24px"},
+            align="start",
+            flex="1",
+            min_height="0",
         ),
+        spacing="0",
+        width="100%",
+        height="100vh",
+        overflow="hidden",
     )

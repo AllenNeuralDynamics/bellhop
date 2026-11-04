@@ -78,8 +78,13 @@ class BellhopClient(SyncClientBase):
         response.raise_for_status()
         return response.json()
 
+    def get_template_defaults(self, name: str) -> dict:
+        response = self._client.get(f"/templates/{name}/defaults")
+        response.raise_for_status()
+        return response.json()
+
     def render_template_raw(self, name: str, values: dict) -> str:
-        response = self._client.request("GET", f"/templates/{name}/render", json=values)
+        response = self._client.post(f"/templates/{name}/render", json=values)
         response.raise_for_status()
         return response.json()
 

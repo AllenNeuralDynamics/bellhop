@@ -40,8 +40,8 @@ VALID_SPEC = {
     "tasks": [
         {
             "name": "Echo",
-            "task_type": "Subprocess",
-            "parameters": {"program": "python", "command": ["-c", "print('hi')"]},
+            "task_type": "Command",
+            "parameters": {"program": "python", "arguments": ["-c", "print('hi')"]},
         }
     ],
 }

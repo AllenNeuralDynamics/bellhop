@@ -8,15 +8,15 @@ from upath import UPath
 
 from bellhop_models.database import Job
 from bellhop_models.specifications import (
+    CommandTask,
     DeleteDataParams,
     DeleteDataTask,
     HTTPRequestParams,
     HTTPRequestTask,
     JobSpecification,
-    RunSubprocessParams,
+    RunProgramParams,
     SendMessageParams,
     SendMessageTask,
-    SubprocessTask,
     TransferDataListParams,
     TransferDataParams,
     TransferDataTask,
@@ -31,9 +31,9 @@ def _build_full_job() -> JobSpecification:
     return JobSpecification(
         name="My Pipeline",
         tasks=[
-            SubprocessTask(
+            CommandTask(
                 name="Run script",
-                parameters=RunSubprocessParams(program="python", command=["script.py"]),
+                parameters=RunProgramParams(program="python", arguments=["script.py"]),
             ),
             TransferDataTask(
                 name="Copy single file",
@@ -71,7 +71,7 @@ def test_build_job_in_code():
     job = _build_full_job()
 
     assert len(job.tasks) == 6
-    assert isinstance(job.tasks[0], SubprocessTask)
+    assert isinstance(job.tasks[0], CommandTask)
     assert job.tasks[0].parameters.program == "python"
     assert isinstance(job.tasks[1].parameters, TransferDataParams)
     assert isinstance(job.tasks[2].parameters, TransferDataListParams)
@@ -94,8 +94,8 @@ def test_job_serialization():
             {
                 "name": "Run script",
                 "description": None,
-                "task_type": "Subprocess",
-                "parameters": {"program": "python", "command": ["script.py"]},
+                "task_type": "Command",
+                "parameters": {"program": "python", "arguments": ["script.py"], "cwd": None},
             },
             {
                 "name": "Copy single file",
@@ -156,10 +156,10 @@ job_YAML = textwrap.dedent("""\
     name: My Pipeline
     tasks:
       - name: Run script
-        task_type: Subprocess
+        task_type: Command
         parameters:
           program: python
-          command: [script.py, --verbose]
+          arguments: [script.py, --verbose]
       - name: Copy results
         task_type: Move Data
         parameters:
@@ -179,9 +179,9 @@ def test_deserialize_job_from_yaml():
     job = JobSpecification.model_validate(data)
 
     assert len(job.tasks) == 3
-    assert isinstance(job.tasks[0], SubprocessTask)
+    assert isinstance(job.tasks[0], CommandTask)
     assert job.tasks[0].parameters.program == "python"
-    assert job.tasks[0].parameters.command == ["script.py", "--verbose"]
+    assert job.tasks[0].parameters.arguments == ["script.py", "--verbose"]
 
     assert isinstance(job.tasks[1], TransferDataTask)
     assert isinstance(job.tasks[1].parameters, TransferDataParams)
@@ -195,9 +195,9 @@ def test_round_trip():
     original = JobSpecification(
         name="Round Trip",
         tasks=[
-            SubprocessTask(
+            CommandTask(
                 name="Run script",
-                parameters=RunSubprocessParams(program="python", command=["script.py"]),
+                parameters=RunProgramParams(program="python", arguments=["script.py"]),
             ),
             HTTPRequestTask(
                 name="Notify",
@@ -218,14 +218,14 @@ def test_round_trip():
 def test_bad_params_raises():
     """Missing required fields in parameters raises ValidationError."""
     with pytest.raises(ValidationError):
-        SubprocessTask(name="bad", parameters={"nope": "nope"})
+        CommandTask(name="bad", parameters={"nope": "nope"})
 
 
 def test_wrong_param_type_raises():
     with pytest.raises(ValidationError):
         TransferDataTask(
             name="bad",
-            parameters=RunSubprocessParams(program="python", command=["script.py"]),
+            parameters=RunProgramParams(program="python", arguments=["script.py"]),
         )
 
 

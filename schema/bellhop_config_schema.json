@@ -33,10 +33,35 @@
       "default": null,
       "title": "Dropbox Dir"
     },
+    "job_templates_dir": {
+      "anyOf": [
+        {
+          "format": "path",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Job Templates Dir"
+    },
     "api_port": {
-      "default": 8311,
+      "default": 8312,
       "title": "Api Port",
       "type": "integer"
+    },
+    "env_vars_to_show": {
+      "default": [
+        "COMPUTERNAME",
+        "AIBS_COMP_ID",
+        "BELLHOP_INSTANCE_ID"
+      ],
+      "items": {
+        "type": "string"
+      },
+      "title": "Env Vars To Show",
+      "type": "array"
     }
   },
   "title": "Config",

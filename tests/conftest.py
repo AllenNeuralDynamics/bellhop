@@ -3,9 +3,7 @@ from datetime import datetime
 from pathlib import Path
 
 import pytest
-from bellhop_models.specifications import JobSpecification, SubprocessTask
-
-from bellhop.task_executors import RunSubprocessParams
+from bellhop_models.specifications import CommandTask, JobSpecification, RunProgramParams
 
 
 def make_dummy_data(folder: Path, files: list[tuple[str, int]] | None = None) -> list[Path]:
@@ -47,13 +45,13 @@ def sample_job():
         description="Example used in unit tests",
         custom_fields={"field1": "value1", "field2": "value2"},
         tasks=[
-            SubprocessTask(
+            CommandTask(
                 name="Task 1",
-                parameters=RunSubprocessParams(program="echo", command=["Hello from task 1"]),
+                parameters=RunProgramParams(program="echo", arguments=["Hello from task 1"]),
             ),
-            SubprocessTask(
+            CommandTask(
                 name="Task 2",
-                parameters=RunSubprocessParams(program="echo", command=["Hello from task 2"]),
+                parameters=RunProgramParams(program="echo", arguments=["Hello from task 2"]),
             ),
         ],
         time_scheduled=datetime(2026, 1, 10, 14, 30),

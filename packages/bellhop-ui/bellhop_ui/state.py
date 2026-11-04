@@ -1,9 +1,37 @@
+import functools
+import inspect
 import logging
 
 import reflex as rx
-from bellhop_client.client import AsyncBellhopClient
+from bellhop_client import AsyncBellhopClient
 
 from bellhop_ui.services.api_client import ClientRegistry
+
+
+def api_call(fn):
+    """Run a background job action only when connected, reconnecting on failure.
+
+    The wrapped handler runs only if ``self.connected``; any exception is turned
+    into a ``check_connection`` event instead of bubbling out of the task.
+    """
+    is_async_gen = inspect.isasyncgenfunction(fn)
+
+    @functools.wraps(fn)
+    async def wrapper(self, *args, **kwargs):
+        async with self:
+            if not self.connected:
+                return
+        try:
+            if is_async_gen:
+                async for event in fn(self, *args, **kwargs):
+                    yield event
+            else:
+                await fn(self, *args, **kwargs)
+        except Exception:
+            logging.exception("job action failed")
+            yield State.check_connection
+
+    return wrapper
 
 
 class TabVisibilityMixin(rx.State, mixin=True):
@@ -107,16 +135,10 @@ class State(rx.State):
         yield State.get_environment
 
     @rx.event(background=True)
+    @api_call
     async def get_environment(self):
         async with self:
-            if not self.connected:
-                return
             client = self.api_client
-
-        try:
-            environment = await client.get_environment()
-            async with self:
-                self.api_environment_info = environment
-        except Exception:
-            async with self:
-                self.connected = False
+        environment = await client.get_environment()
+        async with self:
+            self.api_environment_info = environment

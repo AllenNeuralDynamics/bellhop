@@ -6,10 +6,12 @@ readme = "README.md"
 requires-python = ">=3.14"
 dependencies = [
     "bellhop-client",
+    "bellhop-models",
     "reflex>=0.9.8",
     "reflex-otel",
     "reflex-resizable-panels>=0.0.1",
     "pyyaml>=6.0.3",
+    "reflex-monaco>=0.0.3",
 ]
 
 [build-system]
@@ -18,3 +20,4 @@ build-backend = "hatchling.build"
 
 [tool.uv.sources]
 bellhop-client = { workspace = true }
+bellhop-models = { workspace = true }

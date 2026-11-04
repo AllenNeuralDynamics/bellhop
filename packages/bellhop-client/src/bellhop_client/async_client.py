@@ -78,8 +78,13 @@ class AsyncBellhopClient(AsyncClientBase):
         response.raise_for_status()
         return response.json()
 
+    async def get_template_defaults(self, name: str) -> dict:
+        response = await self._client.get(f"/templates/{name}/defaults")
+        response.raise_for_status()
+        return response.json()
+
     async def render_template_raw(self, name: str, values: dict) -> str:
-        response = await self._client.request("GET", f"/templates/{name}/render", json=values)
+        response = await self._client.post(f"/templates/{name}/render", json=values)
         response.raise_for_status()
         return response.json()
 

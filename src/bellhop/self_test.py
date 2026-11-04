@@ -9,13 +9,13 @@ import time
 import uuid
 from pathlib import Path
 
-from bellhop_client import client
+from bellhop_client import BellhopClient
 from bellhop_models.specifications import (
+    CommandTask,
     DeleteDataParams,
     DeleteDataTask,
     JobSpecification,
-    RunSubprocessParams,
-    SubprocessTask,
+    RunCommandParams,
     TransferDataParams,
     TransferDataTask,
 )
@@ -49,11 +49,10 @@ def make_job_spec(
     generator (which fills a database with many historical copies).
     """
 
-    echo_task = SubprocessTask(
+    echo_task = CommandTask(
         name="Echo",
-        parameters=RunSubprocessParams(
-            program="echo",
-            command=["Hello from bellhop self-test"],
+        parameters=RunCommandParams(
+            command='echo "Hello from bellhop self-test"',
         ),
     )
 
@@ -65,11 +64,10 @@ def make_job_spec(
         ),
     )
 
-    verify_task = SubprocessTask(
+    verify_task = CommandTask(
         name="Verify destination",
-        parameters=RunSubprocessParams(
-            program="dir",
-            command=["/b", "/s", str(dest_dir)],
+        parameters=RunCommandParams(
+            command=f'dir /b /s "{dest_dir}"',
         ),
     )
 
@@ -95,7 +93,7 @@ def _wait_for_terminal(job_id: uuid.UUID, timeout: float):
     """Poll until the job reaches Completed or Errored, then return the Job."""
     deadline = time.monotonic() + timeout
     while time.monotonic() < deadline:
-        job = client.get_job(job_id)
+        job = BellhopClient().get_job(job_id)
         if job.state in ("Completed", "Errored"):
             return job
         time.sleep(0.5)
@@ -128,7 +126,7 @@ def run_self_test(
         name=f"Bellhop self-test {run_id}",
         custom_fields={"self_test": True, **custom_fields},
     )
-    job_id = client.submit_job(job_spec)
+    job_id = BellhopClient().submit_job(job_spec)
     print(f"Self-test job submitted: {job_id}")
 
     job = _wait_for_terminal(job_id, timeout)
@@ -143,4 +141,11 @@ def run_self_test(
 
 
 if __name__ == "__main__":
-    run_self_test()
+    # run_self_test()
+    job_spec = make_job_spec(
+        Path(__file__).parent.parent.parent / "examples" / "data" / "source",
+        Path(__file__).parent.parent.parent / "examples" / "data" / "dest",
+        name="Bellhop self-test",
+        custom_fields={"self_test": True},
+    )
+    print(job_spec.to_yaml())

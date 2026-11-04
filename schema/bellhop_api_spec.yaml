@@ -406,12 +406,40 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/HTTPValidationError'
-  /templates/{name}/render:
+  /templates/{name}/defaults:
     get:
       tags:
       - Templates
+      summary: Get Template Defaults
+      operationId: get_template_defaults_templates__name__defaults_get
+      parameters:
+      - name: name
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Name
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+                title: Response Get Template Defaults Templates  Name  Defaults Get
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /templates/{name}/render:
+    post:
+      tags:
+      - Templates
       summary: Render Template Raw
-      operationId: render_template_raw_templates__name__render_get
+      operationId: render_template_raw_templates__name__render_post
       parameters:
       - name: name
         in: path
@@ -434,7 +462,7 @@ paths:
             application/json:
               schema:
                 type: string
-                title: Response Render Template Raw Templates  Name  Render Get
+                title: Response Render Template Raw Templates  Name  Render Post
         '422':
           description: Validation Error
           content:
@@ -513,6 +541,31 @@ paths:
                 $ref: '#/components/schemas/HTTPValidationError'
 components:
   schemas:
+    CommandTask:
+      properties:
+        name:
+          type: string
+          title: Name
+        description:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Description
+        task_type:
+          type: string
+          const: Command
+          title: Task Type
+          default: Command
+        parameters:
+          anyOf:
+          - $ref: '#/components/schemas/RunCommandParams'
+          - $ref: '#/components/schemas/RunProgramParams'
+          title: Parameters
+      type: object
+      required:
+      - name
+      - parameters
+      title: CommandTask
     DeleteDataParams-Input:
       properties:
         source:
@@ -741,7 +794,7 @@ components:
         tasks:
           items:
             oneOf:
-            - $ref: '#/components/schemas/SubprocessTask'
+            - $ref: '#/components/schemas/CommandTask'
             - $ref: '#/components/schemas/TransferDataTask-Input'
             - $ref: '#/components/schemas/DeleteDataTask-Input'
             - $ref: '#/components/schemas/SendMessageTask'
@@ -749,11 +802,11 @@ components:
             discriminator:
               propertyName: task_type
               mapping:
+                Command: '#/components/schemas/CommandTask'
                 Delete Data: '#/components/schemas/DeleteDataTask-Input'
                 HTTP Request: '#/components/schemas/HTTPRequestTask'
                 Move Data: '#/components/schemas/TransferDataTask-Input'
                 Send Message: '#/components/schemas/SendMessageTask'
-                Subprocess: '#/components/schemas/SubprocessTask'
           type: array
           title: Tasks
       type: object
@@ -787,7 +840,7 @@ components:
         tasks:
           items:
             oneOf:
-            - $ref: '#/components/schemas/SubprocessTask'
+            - $ref: '#/components/schemas/CommandTask'
             - $ref: '#/components/schemas/TransferDataTask-Output'
             - $ref: '#/components/schemas/DeleteDataTask-Output'
             - $ref: '#/components/schemas/SendMessageTask'
@@ -795,11 +848,11 @@ components:
             discriminator:
               propertyName: task_type
               mapping:
+                Command: '#/components/schemas/CommandTask'
                 Delete Data: '#/components/schemas/DeleteDataTask-Output'
                 HTTP Request: '#/components/schemas/HTTPRequestTask'
                 Move Data: '#/components/schemas/TransferDataTask-Output'
                 Send Message: '#/components/schemas/SendMessageTask'
-                Subprocess: '#/components/schemas/SubprocessTask'
           type: array
           title: Tasks
       type: object
@@ -867,21 +920,51 @@ components:
       - time_scheduled
       - next_execution_time
       title: JobSummary
-    RunSubprocessParams:
+    RunCommandParams:
+      properties:
+        command:
+          anyOf:
+          - type: string
+          - items:
+              type: string
+            type: array
+          title: Command
+        cwd:
+          anyOf:
+          - type: string
+            format: path
+          - type: 'null'
+          title: Cwd
+      type: object
+      required:
+      - command
+      title: RunCommandParams
+      description: A command or list of commands to run through the shell.
+    RunProgramParams:
       properties:
         program:
-          type: string
+          anyOf:
+          - type: string
+          - type: string
+            format: path
           title: Program
-        command:
+        arguments:
           items:
             type: string
           type: array
-          title: Command
+          title: Arguments
+          default: []
+        cwd:
+          anyOf:
+          - type: string
+            format: path
+          - type: 'null'
+          title: Cwd
       type: object
       required:
       - program
-      - command
-      title: RunSubprocessParams
+      title: RunProgramParams
+      description: Specify a program to run with arguments. This will bypass the shell.
     SendMessageParams:
       properties:
         recipient:
@@ -921,28 +1004,6 @@ components:
       - name
       - parameters
       title: SendMessageTask
-    SubprocessTask:
-      properties:
-        name:
-          type: string
-          title: Name
-        description:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Description
-        task_type:
-          type: string
-          const: Subprocess
-          title: Task Type
-          default: Subprocess
-        parameters:
-          $ref: '#/components/schemas/RunSubprocessParams'
-      type: object
-      required:
-      - name
-      - parameters
-      title: SubprocessTask
     Task:
       properties:
         id:

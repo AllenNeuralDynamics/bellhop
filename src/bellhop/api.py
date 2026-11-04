@@ -24,7 +24,7 @@ async def lifespan(app: FastAPI):
     config = app.state.config
     app.state.engine = Engine(db_file=str(config.database_file)).start()
     app.state.dropbox = JobDropbox(app.state.engine, config.dropbox_dir).start()
-    app.state.template_manager = TemplateManager(config.job_templates_dir)
+    app.state.template_manager = TemplateManager(config)
     yield
     app.state.dropbox.stop()
     app.state.engine.shutdown()
@@ -196,7 +196,15 @@ def get_template_variables(name: str, manager: Annotated[TemplateManager, Depend
         raise HTTPException(status_code=404, detail="Template not found")
 
 
-@app.get("/templates/{name}/render", tags=["Templates"])
+@app.get("/templates/{name}/defaults", tags=["Templates"])
+def get_template_defaults(name: str, manager: Annotated[TemplateManager, Depends(get_template_manager)]) -> dict:
+    try:
+        return manager.get_template_defaults(name)
+    except FileNotFoundError:
+        raise HTTPException(status_code=404, detail="Template not found")
+
+
+@app.post("/templates/{name}/render", tags=["Templates"])
 def render_template_raw(
     name: str, values: dict, manager: Annotated[TemplateManager, Depends(get_template_manager)]
 ) -> str:

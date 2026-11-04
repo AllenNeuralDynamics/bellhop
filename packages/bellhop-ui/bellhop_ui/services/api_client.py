@@ -1,6 +1,6 @@
 import logging
 
-from bellhop_client.client import AsyncBellhopClient
+from bellhop_client import AsyncBellhopClient
 
 
 class ClientRegistry:

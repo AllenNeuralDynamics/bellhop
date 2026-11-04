@@ -19,8 +19,10 @@ Examples
 """
 
 from datetime import datetime, time
+from pathlib import Path
 from typing import Annotated, Literal
 
+import yaml
 from pydantic import BaseModel, BeforeValidator, Field, PlainSerializer, TypeAdapter
 from upath import UPath as _UPath
 
@@ -43,7 +45,8 @@ TaskTypes = Literal[
     "Move Data",
     "Delete Data",
     "Send Message",
-    "Subprocess",
+    # "Subprocess",
+    "Command",
     "HTTP Request",
 ]
 
@@ -122,14 +125,34 @@ class DeleteDataTask(TaskSpecification[DeleteDataParams]):
 ### Run subprocess
 
 
-class RunSubprocessParams(BaseModel):
-    program: str
-    command: list[str]
+class RunCommandParams(BaseModel):
+    """A command or list of commands to run through the shell."""
+
+    command: str | list[str]
+    cwd: Path | None = None
 
 
-class SubprocessTask(TaskSpecification[RunSubprocessParams]):
-    task_type: Literal["Subprocess"] = "Subprocess"
-    parameters: RunSubprocessParams
+class RunProgramParams(BaseModel):
+    """Specify a program to run with arguments. This will bypass the shell."""
+
+    program: str | Path
+    arguments: list[str] = []
+    cwd: Path | None = None
+
+
+class CommandTask(TaskSpecification[RunCommandParams]):
+    task_type: Literal["Command"] = "Command"
+    parameters: RunCommandParams | RunProgramParams
+
+
+# class RunSubprocessParams(BaseModel):
+#     program: str
+#     arguments: str | list[str]
+
+
+# class SubprocessTask(TaskSpecification[RunProgramParams | RunCommandParams]):
+#     task_type: Literal["Subprocess"] = "Subprocess"
+#     parameters: RunProgramParams | RunCommandParams
 
 
 ### Send message
@@ -165,7 +188,7 @@ class HTTPRequestTask(TaskSpecification[HTTPRequestParams]):
 
 
 AnyTask = Annotated[
-    SubprocessTask | TransferDataTask | DeleteDataTask | SendMessageTask | HTTPRequestTask,
+    CommandTask | TransferDataTask | DeleteDataTask | SendMessageTask | HTTPRequestTask,
     Field(discriminator="task_type"),
 ]
 
@@ -178,3 +201,6 @@ class JobSpecification(BaseModel):
     custom_fields: dict = {}
     time_scheduled: datetime | time | None = None
     tasks: list[AnyTask]
+
+    def to_yaml(self) -> str:
+        return yaml.dump(self.model_dump(), sort_keys=False)

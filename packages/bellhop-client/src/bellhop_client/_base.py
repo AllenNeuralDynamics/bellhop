@@ -13,10 +13,15 @@ import httpx
 
 BASE_URL = "http://localhost:8312"
 
+# Drop idle keep-alive connections before the server's keep-alive timeout (uvicorn
+# defaults to 5s) so we never reuse a socket the server has already closed, which
+# otherwise surfaces as httpx.RemoteProtocolError on the next polled request.
+_DEFAULT_LIMITS = httpx.Limits(keepalive_expiry=2.0)
+
 
 class SyncClientBase:
     def __init__(self, base_url: str = BASE_URL, client: httpx.Client | None = None):
-        self._client = client or httpx.Client(base_url=base_url)
+        self._client = client or httpx.Client(base_url=base_url, limits=_DEFAULT_LIMITS)
         self._owns_client = client is None
 
     def close(self) -> None:
@@ -43,7 +48,7 @@ class SyncClientBase:
 
 class AsyncClientBase:
     def __init__(self, base_url: str = BASE_URL, client: httpx.AsyncClient | None = None):
-        self._client = client or httpx.AsyncClient(base_url=base_url)
+        self._client = client or httpx.AsyncClient(base_url=base_url, limits=_DEFAULT_LIMITS)
         self._owns_client = client is None
 
     async def aclose(self) -> None:

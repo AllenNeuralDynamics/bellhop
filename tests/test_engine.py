@@ -11,7 +11,7 @@ from datetime import datetime, timedelta
 
 import pytest
 from bellhop_models.database import Job
-from bellhop_models.specifications import JobSpecification, RunSubprocessParams, SubprocessTask
+from bellhop_models.specifications import CommandTask, JobSpecification, RunProgramParams
 
 from bellhop.db import Database
 from bellhop.engine import Engine
@@ -33,11 +33,11 @@ def pending_job_spec():
     return JobSpecification(
         name="Pending Job",
         tasks=[
-            SubprocessTask(
+            CommandTask(
                 name="Echo",
-                parameters=RunSubprocessParams(
+                parameters=RunProgramParams(
                     program=sys.executable,
-                    command=["-c", "print('hello', flush=True)"],
+                    arguments=["-c", "print('hello', flush=True)"],
                 ),
             )
         ],
@@ -50,18 +50,18 @@ def two_task_spec():
     return JobSpecification(
         name="Two Task Job",
         tasks=[
-            SubprocessTask(
+            CommandTask(
                 name="Step 1",
-                parameters=RunSubprocessParams(
+                parameters=RunProgramParams(
                     program=sys.executable,
-                    command=["-c", "print('step 1', flush=True)"],
+                    arguments=["-c", "print('step 1', flush=True)"],
                 ),
             ),
-            SubprocessTask(
+            CommandTask(
                 name="Step 2",
-                parameters=RunSubprocessParams(
+                parameters=RunProgramParams(
                     program=sys.executable,
-                    command=["-c", "print('step 2', flush=True)"],
+                    arguments=["-c", "print('step 2', flush=True)"],
                 ),
             ),
         ],
@@ -170,11 +170,11 @@ def test_failing_task_marks_job_errored(engine):
     spec = JobSpecification(
         name="Failing Job",
         tasks=[
-            SubprocessTask(
+            CommandTask(
                 name="Bad command",
-                parameters=RunSubprocessParams(
+                parameters=RunProgramParams(
                     program=sys.executable,
-                    command=["-c", "raise SystemExit(1)"],
+                    arguments=["-c", "raise SystemExit(1)"],
                 ),
             )
         ],
@@ -188,11 +188,11 @@ def test_failing_task_stores_error_message(engine):
     spec = JobSpecification(
         name="Failing Job",
         tasks=[
-            SubprocessTask(
+            CommandTask(
                 name="Bad command",
-                parameters=RunSubprocessParams(
+                parameters=RunProgramParams(
                     program=sys.executable,
-                    command=["-c", "raise SystemExit(1)"],
+                    arguments=["-c", "raise SystemExit(1)"],
                 ),
             )
         ],
@@ -209,18 +209,18 @@ def test_second_task_not_run_after_failure(engine):
     spec = JobSpecification(
         name="Fail Then Stop",
         tasks=[
-            SubprocessTask(
+            CommandTask(
                 name="Fail",
-                parameters=RunSubprocessParams(
+                parameters=RunProgramParams(
                     program=sys.executable,
-                    command=["-c", "raise SystemExit(1)"],
+                    arguments=["-c", "raise SystemExit(1)"],
                 ),
             ),
-            SubprocessTask(
+            CommandTask(
                 name="Should not run",
-                parameters=RunSubprocessParams(
+                parameters=RunProgramParams(
                     program=sys.executable,
-                    command=["-c", "print('should not appear')"],
+                    arguments=["-c", "print('should not appear')"],
                 ),
             ),
         ],
@@ -244,11 +244,11 @@ def test_start_reschedules_pending_jobs_left_in_db(tmp_path):
     spec = JobSpecification(
         name="Left Over Job",
         tasks=[
-            SubprocessTask(
+            CommandTask(
                 name="Echo",
-                parameters=RunSubprocessParams(
+                parameters=RunProgramParams(
                     program=sys.executable,
-                    command=["-c", "print('hello', flush=True)"],
+                    arguments=["-c", "print('hello', flush=True)"],
                 ),
             )
         ],
@@ -269,11 +269,11 @@ def test_start_runs_pending_job_left_in_db_to_completion(tmp_path):
     spec = JobSpecification(
         name="Left Over Job",
         tasks=[
-            SubprocessTask(
+            CommandTask(
                 name="Echo",
-                parameters=RunSubprocessParams(
+                parameters=RunProgramParams(
                     program=sys.executable,
-                    command=["-c", "print('hello', flush=True)"],
+                    arguments=["-c", "print('hello', flush=True)"],
                 ),
             )
         ],

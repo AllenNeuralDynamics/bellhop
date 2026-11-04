@@ -33,6 +33,7 @@ Tasks:
 - Fully test data transfer functions and make really solid and clean
 - Integrate good outputs from each task executor so task executions are verbose
 - Maybe clean up engine.py, it's somewhat hard to understand looking at it fresh
+- delete data should have older_than functionality
 
 General:
 - Job/task templates
