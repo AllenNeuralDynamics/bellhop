@@ -20,7 +20,7 @@ Examples
 
 from datetime import datetime, time
 from pathlib import Path
-from typing import Annotated, Literal
+from typing import Annotated, Generic, Literal, TypeVar
 
 import yaml
 from pydantic import BaseModel, BeforeValidator, Field, PlainSerializer, TypeAdapter
@@ -50,8 +50,10 @@ TaskTypes = Literal[
     "HTTP Request",
 ]
 
+ParamsT = TypeVar("ParamsT")
 
-class TaskSpecification[ParamsT](BaseModel):
+
+class TaskSpecification(BaseModel, Generic[ParamsT]):
     name: str
     description: str | None = None
     task_type: TaskTypes

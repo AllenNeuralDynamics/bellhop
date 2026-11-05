@@ -30,5 +30,15 @@ format:
 test:
 	uv run pytest
 
+test_all_versions:
+	uv run --isolated --python 3.11 pytest
+	uv run --isolated --python 3.12 pytest
+	uv run --isolated --python 3.13 pytest
+	uv run --isolated --python 3.14 pytest
+	uv run --isolated --python 3.15 pytest
+
 build:
-	uv run pyinstaller src/bellhop/cli.py -n bellhop --noconsole --add-data "src/bellhop/resources;src/bellhop/resources"
+	uv run pyinstaller src/bellhop/cli.py -n bellhop --noconsole --collect-all bellhop --add-data "src/bellhop/resources;src/bellhop/resources"
+
+test_build:
+	./dist/bellhop/bellhop.exe -v

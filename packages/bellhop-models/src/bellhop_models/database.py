@@ -2,13 +2,15 @@
 
 import uuid
 from datetime import datetime, time
-from typing import Literal, Self
+from typing import Generic, Literal, Self, TypeVar
 
 from pydantic import BaseModel, Field
 
 from bellhop_models.specifications import JobSpecification, TaskSpecification
 
 TaskStates = Literal["Not Started", "In Progress", "Completed", "Errored"]
+
+ParamsT = TypeVar("ParamsT")
 
 
 ## Internal execution tracking models
@@ -26,7 +28,7 @@ class TaskExecution(BaseModel):
     logs: str = ""
 
 
-class Task[ParamsT](BaseModel):
+class Task(BaseModel, Generic[ParamsT]):
     id: uuid.UUID = Field(default_factory=uuid.uuid4)
     state: TaskStates = "Not Started"
 
