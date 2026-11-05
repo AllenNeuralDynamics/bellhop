@@ -26,3 +26,6 @@ ui:
 format:
 	uvx ruff check --fix .
 	uvx ruff format .
+
+test:
+	uv run pytest
