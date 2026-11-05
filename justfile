@@ -29,3 +29,6 @@ format:
 
 test:
 	uv run pytest
+
+build:
+	uv run pyinstaller src/bellhop/cli.py -n bellhop --noconsole --add-data "src/bellhop/resources;src/bellhop/resources"
