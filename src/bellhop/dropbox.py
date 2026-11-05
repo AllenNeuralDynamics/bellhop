@@ -1,3 +1,4 @@
+import time
 from pathlib import Path
 
 import yaml
@@ -23,9 +24,21 @@ class _DropboxHandler(FileSystemEventHandler):
             return
         self._process(path)
 
+    def _read_spec_data(self, path: Path, retries: int = 20, delay: float = 0.1) -> object:
+        # on_created can fire before the writer flushes; wait for non-empty content.
+        for _ in range(retries):
+            try:
+                data = yaml.safe_load(path.read_text())
+            except yaml.YAMLError:
+                data = None
+            if data is not None:
+                return data
+            time.sleep(delay)
+        return yaml.safe_load(path.read_text())
+
     def _process(self, path: Path) -> None:
         try:
-            spec = JobSpecification.model_validate(yaml.safe_load(path.read_text()))
+            spec = JobSpecification.model_validate(self._read_spec_data(path))
             job_id = self._engine.submit_job(spec)
             logger.info(f"Dropbox: submitted '{spec.name}' ({job_id}) from {path.name}")
             path.rename(self._submitted_dir / path.name)

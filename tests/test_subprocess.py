@@ -6,6 +6,7 @@ import sys
 import time
 from multiprocessing import Process, Queue
 from pathlib import Path
+from queue import Empty
 
 import pytest
 from bellhop_models.specifications import RunCommandParams, RunProgramParams
@@ -15,10 +16,15 @@ from bellhop.subprocess_utils import run_live_process
 from bellhop.task_executors import _run_command
 
 
-def _drain(log_queue: Queue[str]) -> list[str]:
+def _drain(log_queue: Queue[str], timeout: float = 2.0) -> list[str]:
+    # Queue.empty() is unreliable (the feeder thread may not have flushed yet),
+    # so block briefly on get() and stop only once nothing more arrives.
     lines = []
-    while not log_queue.empty():
-        lines.append(log_queue.get())
+    while True:
+        try:
+            lines.append(log_queue.get(timeout=timeout))
+        except Empty:
+            break
     return lines
 
 
@@ -69,9 +75,7 @@ def test_command_output():
     log_queue: Queue[str] = Queue()
     _run_command(command, log_queue)
 
-    output = []
-    while not log_queue.empty():
-        output.append(log_queue.get())
+    output = _drain(log_queue)
     assert any(marker in line for line in output)
 
 
