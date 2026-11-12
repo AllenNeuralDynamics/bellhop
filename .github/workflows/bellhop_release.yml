@@ -1,0 +1,24 @@
+name: Tag and Publish
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  tag-and-publish:
+    # contents: write is needed to push tags, create releases, and upload
+    # release assets. If build_docs is enabled, also grant pages: write and
+    # id-token: write for the GitHub Pages deploy.
+    permissions:
+      contents: write
+    uses: ./.github/workflows/tag-build-release.yml
+    with:
+      auto_detect_artifacts_folder: dist
+      build_docs: false
+      build_command: just build
+      test_command: just test_exe

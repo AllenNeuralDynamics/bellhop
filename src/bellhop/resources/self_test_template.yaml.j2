@@ -1,0 +1,33 @@
+{% set destination_folder = destination_folder | default('destination') %}
+
+name: Bellhop self-test {{ name }}
+description: Automated self-test job
+custom_fields:
+  self_test: true
+  tester_name: {{ tester_name }}
+time_scheduled: null
+tasks:
+  - name: Echo
+    description: null
+    task_type: Command
+    parameters:
+      command: cmd /c echo Hello from bellhop self-test
+  - name: Move data
+    description: null
+    task_type: Move Data
+    parameters:
+      source: C:/ProgramData/AllenInstitute/bellhop/self_test/dummy_data
+      destination: C:/ProgramData/AllenInstitute/bellhop/self_test/{{ destination_folder }}
+      options: {}
+  - name: Verify destination
+    description: null
+    task_type: Command
+    parameters:
+      command: cmd /c dir /b /s "C:\ProgramData\AllenInstitute\bellhop\self_test\{{ destination_folder }}"
+{% if delete_files %}
+  - name: Delete dest dir
+    description: null
+    task_type: Delete Data
+    parameters:
+      source: C:/ProgramData/AllenInstitute/bellhop/self_test/{{ destination_folder }}
+{% endif %}

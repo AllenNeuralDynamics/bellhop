@@ -1,0 +1,1368 @@
+openapi: 3.1.0
+info:
+  title: FastAPI
+  version: 0.1.0
+paths:
+  /:
+    get:
+      tags:
+      - Health
+      summary: Health Check
+      operationId: health_check__get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                additionalProperties:
+                  type: string
+                type: object
+                title: Response Health Check  Get
+  /environment:
+    get:
+      summary: Get Environment
+      operationId: get_environment_environment_get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                additionalProperties:
+                  type: string
+                type: object
+                title: Response Get Environment Environment Get
+  /jobs:
+    get:
+      tags:
+      - Jobs
+      summary: List Jobs
+      operationId: list_jobs_jobs_get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/JobSummary'
+                type: array
+                title: Response List Jobs Jobs Get
+    post:
+      tags:
+      - Jobs
+      summary: Submit Job
+      operationId: submit_job_jobs_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/JobSpecification-Input'
+        required: true
+      responses:
+        '201':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: string
+                format: uuid
+                title: Response Submit Job Jobs Post
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /jobs/{job_id}:
+    get:
+      tags:
+      - Jobs
+      summary: Get Job
+      operationId: get_job_jobs__job_id__get
+      parameters:
+      - name: job_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+          title: Job Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Job'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+    put:
+      tags:
+      - Jobs
+      summary: Update Job
+      operationId: update_job_jobs__job_id__put
+      parameters:
+      - name: job_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+          title: Job Id
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Job'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+    delete:
+      tags:
+      - Jobs
+      summary: Abort Job
+      operationId: abort_job_jobs__job_id__delete
+      parameters:
+      - name: job_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+          title: Job Id
+      responses:
+        '204':
+          description: Successful Response
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /jobs/{job_id}/execute-now:
+    post:
+      tags:
+      - Jobs
+      summary: Execute Now
+      operationId: execute_now_jobs__job_id__execute_now_post
+      parameters:
+      - name: job_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+          title: Job Id
+      responses:
+        '204':
+          description: Successful Response
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /jobs/{job_id}/retry:
+    post:
+      tags:
+      - Jobs
+      summary: Retry Job
+      operationId: retry_job_jobs__job_id__retry_post
+      parameters:
+      - name: job_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+          title: Job Id
+      responses:
+        '204':
+          description: Successful Response
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /executions/{execution_id}:
+    get:
+      tags:
+      - Executions
+      summary: Get Execution
+      operationId: get_execution_executions__execution_id__get
+      parameters:
+      - name: execution_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+          title: Execution Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TaskExecution'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /executions/{execution_id}/logs:
+    get:
+      tags:
+      - Executions
+      summary: Stream Execution Logs
+      description: Stream live logs for a running task execution as Server-Sent Events.
+      operationId: stream_execution_logs_executions__execution_id__logs_get
+      parameters:
+      - name: execution_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+          title: Execution Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /templates:
+    get:
+      tags:
+      - Templates
+      summary: List Templates
+      operationId: list_templates_templates_get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                items:
+                  type: string
+                type: array
+                title: Response List Templates Templates Get
+  /templates/{name}:
+    post:
+      tags:
+      - Templates
+      summary: Create Template
+      operationId: create_template_templates__name__post
+      parameters:
+      - name: name
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Name
+      - name: body
+        in: query
+        required: true
+        schema:
+          type: string
+          title: Body
+      responses:
+        '201':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+    get:
+      tags:
+      - Templates
+      summary: Get Template
+      operationId: get_template_templates__name__get
+      parameters:
+      - name: name
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Name
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: string
+                title: Response Get Template Templates  Name  Get
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+    put:
+      tags:
+      - Templates
+      summary: Update Template
+      operationId: update_template_templates__name__put
+      parameters:
+      - name: name
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Name
+      - name: body
+        in: query
+        required: true
+        schema:
+          type: string
+          title: Body
+      responses:
+        '204':
+          description: Successful Response
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+    delete:
+      tags:
+      - Templates
+      summary: Delete Template
+      operationId: delete_template_templates__name__delete
+      parameters:
+      - name: name
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Name
+      responses:
+        '204':
+          description: Successful Response
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /templates/{name}/variables:
+    get:
+      tags:
+      - Templates
+      summary: Get Template Variables
+      operationId: get_template_variables_templates__name__variables_get
+      parameters:
+      - name: name
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Name
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+                title: Response Get Template Variables Templates  Name  Variables
+                  Get
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /templates/{name}/defaults:
+    get:
+      tags:
+      - Templates
+      summary: Get Template Defaults
+      operationId: get_template_defaults_templates__name__defaults_get
+      parameters:
+      - name: name
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Name
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+                title: Response Get Template Defaults Templates  Name  Defaults Get
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /templates/{name}/render:
+    post:
+      tags:
+      - Templates
+      summary: Render Template Raw
+      operationId: render_template_raw_templates__name__render_post
+      parameters:
+      - name: name
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Name
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: true
+              title: Values
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: string
+                title: Response Render Template Raw Templates  Name  Render Post
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /templates/{name}/render-jobspec:
+    post:
+      tags:
+      - Templates
+      summary: Render Template Jobspec
+      operationId: render_template_jobspec_templates__name__render_jobspec_post
+      parameters:
+      - name: name
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Name
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: true
+              title: Values
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JobSpecification-Output'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /templates/{name}/submit-job:
+    post:
+      tags:
+      - Templates
+      summary: Submit Template Job
+      operationId: submit_template_job_templates__name__submit_job_post
+      parameters:
+      - name: name
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Name
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: true
+              title: Values
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: string
+                format: uuid
+                title: Response Submit Template Job Templates  Name  Submit Job Post
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+components:
+  schemas:
+    CommandTask:
+      properties:
+        name:
+          type: string
+          title: Name
+        description:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Description
+        task_type:
+          type: string
+          const: Command
+          title: Task Type
+          default: Command
+        parameters:
+          anyOf:
+          - $ref: '#/components/schemas/RunCommandParams'
+          - $ref: '#/components/schemas/RunProgramParams'
+          title: Parameters
+      type: object
+      required:
+      - name
+      - parameters
+      title: CommandTask
+    DeleteDataParams-Input:
+      properties:
+        source:
+          anyOf:
+          - type: string
+          - properties:
+              path:
+                type: string
+                title: Path
+              protocol:
+                anyOf:
+                - type: string
+                - type: 'null'
+                title: Protocol
+              storage_options:
+                additionalProperties: true
+                type: object
+                title: Storage Options
+            additionalProperties: false
+            type: object
+            required:
+            - path
+          title: Source
+      type: object
+      required:
+      - source
+      title: DeleteDataParams
+    DeleteDataParams-Output:
+      properties:
+        source:
+          type: string
+          title: Source
+      type: object
+      required:
+      - source
+      title: DeleteDataParams
+    DeleteDataTask-Input:
+      properties:
+        name:
+          type: string
+          title: Name
+        description:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Description
+        task_type:
+          type: string
+          const: Delete Data
+          title: Task Type
+          default: Delete Data
+        parameters:
+          $ref: '#/components/schemas/DeleteDataParams-Input'
+      type: object
+      required:
+      - name
+      - parameters
+      title: DeleteDataTask
+    DeleteDataTask-Output:
+      properties:
+        name:
+          type: string
+          title: Name
+        description:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Description
+        task_type:
+          type: string
+          const: Delete Data
+          title: Task Type
+          default: Delete Data
+        parameters:
+          $ref: '#/components/schemas/DeleteDataParams-Output'
+      type: object
+      required:
+      - name
+      - parameters
+      title: DeleteDataTask
+    HTTPRequestParams:
+      properties:
+        url:
+          type: string
+          title: Url
+        method:
+          type: string
+          enum:
+          - GET
+          - POST
+          - PUT
+          - DELETE
+          title: Method
+          default: GET
+        headers:
+          additionalProperties: true
+          type: object
+          title: Headers
+          default: {}
+        data:
+          anyOf:
+          - additionalProperties: true
+            type: object
+          - type: 'null'
+          title: Data
+      type: object
+      required:
+      - url
+      title: HTTPRequestParams
+    HTTPRequestTask:
+      properties:
+        name:
+          type: string
+          title: Name
+        description:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Description
+        task_type:
+          type: string
+          const: HTTP Request
+          title: Task Type
+          default: HTTP Request
+        parameters:
+          $ref: '#/components/schemas/HTTPRequestParams'
+      type: object
+      required:
+      - name
+      - parameters
+      title: HTTPRequestTask
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    Job:
+      properties:
+        id:
+          type: string
+          format: uuid
+          title: Id
+        state:
+          type: string
+          enum:
+          - Not Started
+          - In Progress
+          - Completed
+          - Errored
+          title: State
+          default: Not Started
+        name:
+          type: string
+          title: Name
+        description:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Description
+        custom_fields:
+          additionalProperties: true
+          type: object
+          title: Custom Fields
+          default: {}
+        tasks:
+          items:
+            $ref: '#/components/schemas/Task'
+          type: array
+          title: Tasks
+        time_submitted:
+          type: string
+          format: date-time
+          title: Time Submitted
+        time_scheduled:
+          type: string
+          format: date-time
+          title: Time Scheduled
+        next_execution_time:
+          type: string
+          format: date-time
+          title: Next Execution Time
+        history:
+          items:
+            $ref: '#/components/schemas/TaskExecution'
+          type: array
+          title: History
+          default: []
+        next_task:
+          anyOf:
+          - type: integer
+          - type: 'null'
+          title: Next Task
+          default: 0
+      type: object
+      required:
+      - name
+      - tasks
+      title: Job
+    JobSpecification-Input:
+      properties:
+        name:
+          type: string
+          title: Name
+        description:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Description
+        custom_fields:
+          additionalProperties: true
+          type: object
+          title: Custom Fields
+          default: {}
+        time_scheduled:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: string
+            format: time
+          - type: 'null'
+          title: Time Scheduled
+        tasks:
+          items:
+            oneOf:
+            - $ref: '#/components/schemas/CommandTask'
+            - $ref: '#/components/schemas/TransferDataTask-Input'
+            - $ref: '#/components/schemas/DeleteDataTask-Input'
+            - $ref: '#/components/schemas/SendMessageTask'
+            - $ref: '#/components/schemas/HTTPRequestTask'
+            discriminator:
+              propertyName: task_type
+              mapping:
+                Command: '#/components/schemas/CommandTask'
+                Delete Data: '#/components/schemas/DeleteDataTask-Input'
+                HTTP Request: '#/components/schemas/HTTPRequestTask'
+                Move Data: '#/components/schemas/TransferDataTask-Input'
+                Send Message: '#/components/schemas/SendMessageTask'
+          type: array
+          title: Tasks
+      type: object
+      required:
+      - name
+      - tasks
+      title: JobSpecification
+    JobSpecification-Output:
+      properties:
+        name:
+          type: string
+          title: Name
+        description:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Description
+        custom_fields:
+          additionalProperties: true
+          type: object
+          title: Custom Fields
+          default: {}
+        time_scheduled:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: string
+            format: time
+          - type: 'null'
+          title: Time Scheduled
+        tasks:
+          items:
+            oneOf:
+            - $ref: '#/components/schemas/CommandTask'
+            - $ref: '#/components/schemas/TransferDataTask-Output'
+            - $ref: '#/components/schemas/DeleteDataTask-Output'
+            - $ref: '#/components/schemas/SendMessageTask'
+            - $ref: '#/components/schemas/HTTPRequestTask'
+            discriminator:
+              propertyName: task_type
+              mapping:
+                Command: '#/components/schemas/CommandTask'
+                Delete Data: '#/components/schemas/DeleteDataTask-Output'
+                HTTP Request: '#/components/schemas/HTTPRequestTask'
+                Move Data: '#/components/schemas/TransferDataTask-Output'
+                Send Message: '#/components/schemas/SendMessageTask'
+          type: array
+          title: Tasks
+      type: object
+      required:
+      - name
+      - tasks
+      title: JobSpecification
+    JobSummary:
+      properties:
+        id:
+          type: string
+          format: uuid
+          title: Id
+        state:
+          type: string
+          enum:
+          - Not Started
+          - In Progress
+          - Completed
+          - Errored
+          title: State
+        name:
+          type: string
+          title: Name
+        description:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Description
+        custom_fields:
+          additionalProperties: true
+          type: object
+          title: Custom Fields
+          default: {}
+        tasks:
+          items:
+            $ref: '#/components/schemas/TaskSummary'
+          type: array
+          title: Tasks
+        time_submitted:
+          type: string
+          format: date-time
+          title: Time Submitted
+        time_scheduled:
+          type: string
+          format: date-time
+          title: Time Scheduled
+        next_execution_time:
+          type: string
+          format: date-time
+          title: Next Execution Time
+        next_task:
+          anyOf:
+          - type: integer
+          - type: 'null'
+          title: Next Task
+          default: 0
+      type: object
+      required:
+      - id
+      - state
+      - name
+      - tasks
+      - time_submitted
+      - time_scheduled
+      - next_execution_time
+      title: JobSummary
+    RunCommandParams:
+      properties:
+        command:
+          anyOf:
+          - type: string
+          - items:
+              type: string
+            type: array
+          title: Command
+        cwd:
+          anyOf:
+          - type: string
+            format: path
+          - type: 'null'
+          title: Cwd
+      type: object
+      required:
+      - command
+      title: RunCommandParams
+      description: A command or list of commands to run through the shell.
+    RunProgramParams:
+      properties:
+        program:
+          anyOf:
+          - type: string
+          - type: string
+            format: path
+          title: Program
+        arguments:
+          items:
+            type: string
+          type: array
+          title: Arguments
+          default: []
+        cwd:
+          anyOf:
+          - type: string
+            format: path
+          - type: 'null'
+          title: Cwd
+      type: object
+      required:
+      - program
+      title: RunProgramParams
+      description: Specify a program to run with arguments. This will bypass the shell.
+    SendMessageParams:
+      properties:
+        recipient:
+          type: string
+          title: Recipient
+        subject:
+          type: string
+          title: Subject
+        body:
+          type: string
+          title: Body
+      type: object
+      required:
+      - recipient
+      - subject
+      - body
+      title: SendMessageParams
+    SendMessageTask:
+      properties:
+        name:
+          type: string
+          title: Name
+        description:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Description
+        task_type:
+          type: string
+          const: Send Message
+          title: Task Type
+          default: Send Message
+        parameters:
+          $ref: '#/components/schemas/SendMessageParams'
+      type: object
+      required:
+      - name
+      - parameters
+      title: SendMessageTask
+    Task:
+      properties:
+        id:
+          type: string
+          format: uuid
+          title: Id
+        state:
+          type: string
+          enum:
+          - Not Started
+          - In Progress
+          - Completed
+          - Errored
+          title: State
+          default: Not Started
+        name:
+          type: string
+          title: Name
+        description:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Description
+        task_type:
+          type: string
+          title: Task Type
+        parameters:
+          title: Parameters
+      type: object
+      required:
+      - name
+      - task_type
+      - parameters
+      title: Task
+    TaskExecution:
+      properties:
+        id:
+          type: string
+          format: uuid
+          title: Id
+        task:
+          $ref: '#/components/schemas/Task'
+        success:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          title: Success
+        message:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Message
+        time_started:
+          type: string
+          format: date-time
+          title: Time Started
+        time_ended:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Time Ended
+        logs:
+          type: string
+          title: Logs
+          default: ''
+      type: object
+      required:
+      - task
+      - time_started
+      title: TaskExecution
+      description: Tracks a single execution of a Task.
+    TaskSummary:
+      properties:
+        id:
+          type: string
+          format: uuid
+          title: Id
+        name:
+          type: string
+          title: Name
+        state:
+          type: string
+          enum:
+          - Not Started
+          - In Progress
+          - Completed
+          - Errored
+          title: State
+      type: object
+      required:
+      - id
+      - name
+      - state
+      title: TaskSummary
+    TransferDataListParams-Input:
+      properties:
+        source:
+          items:
+            anyOf:
+            - type: string
+            - properties:
+                path:
+                  type: string
+                  title: Path
+                protocol:
+                  anyOf:
+                  - type: string
+                  - type: 'null'
+                  title: Protocol
+                storage_options:
+                  additionalProperties: true
+                  type: object
+                  title: Storage Options
+              additionalProperties: false
+              type: object
+              required:
+              - path
+          type: array
+          title: Source
+        destination:
+          anyOf:
+          - type: string
+          - properties:
+              path:
+                type: string
+                title: Path
+              protocol:
+                anyOf:
+                - type: string
+                - type: 'null'
+                title: Protocol
+              storage_options:
+                additionalProperties: true
+                type: object
+                title: Storage Options
+            additionalProperties: false
+            type: object
+            required:
+            - path
+          title: Destination
+        options:
+          additionalProperties: true
+          type: object
+          title: Options
+          default: {}
+        source_base_dir:
+          anyOf:
+          - type: string
+          - properties:
+              path:
+                type: string
+                title: Path
+              protocol:
+                anyOf:
+                - type: string
+                - type: 'null'
+                title: Protocol
+              storage_options:
+                additionalProperties: true
+                type: object
+                title: Storage Options
+            additionalProperties: false
+            type: object
+            required:
+            - path
+          - type: 'null'
+          title: Source Base Dir
+        preserve_structure:
+          type: boolean
+          title: Preserve Structure
+          default: true
+        parallel:
+          type: boolean
+          title: Parallel
+          default: false
+      type: object
+      required:
+      - source
+      - destination
+      title: TransferDataListParams
+    TransferDataListParams-Output:
+      properties:
+        source:
+          items:
+            type: string
+          type: array
+          title: Source
+        destination:
+          type: string
+          title: Destination
+        options:
+          additionalProperties: true
+          type: object
+          title: Options
+          default: {}
+        source_base_dir:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Source Base Dir
+        preserve_structure:
+          type: boolean
+          title: Preserve Structure
+          default: true
+        parallel:
+          type: boolean
+          title: Parallel
+          default: false
+      type: object
+      required:
+      - source
+      - destination
+      title: TransferDataListParams
+    TransferDataParams-Input:
+      properties:
+        source:
+          anyOf:
+          - type: string
+          - properties:
+              path:
+                type: string
+                title: Path
+              protocol:
+                anyOf:
+                - type: string
+                - type: 'null'
+                title: Protocol
+              storage_options:
+                additionalProperties: true
+                type: object
+                title: Storage Options
+            additionalProperties: false
+            type: object
+            required:
+            - path
+          title: Source
+        destination:
+          anyOf:
+          - type: string
+          - properties:
+              path:
+                type: string
+                title: Path
+              protocol:
+                anyOf:
+                - type: string
+                - type: 'null'
+                title: Protocol
+              storage_options:
+                additionalProperties: true
+                type: object
+                title: Storage Options
+            additionalProperties: false
+            type: object
+            required:
+            - path
+          title: Destination
+        options:
+          additionalProperties: true
+          type: object
+          title: Options
+          default: {}
+      type: object
+      required:
+      - source
+      - destination
+      title: TransferDataParams
+    TransferDataParams-Output:
+      properties:
+        source:
+          type: string
+          title: Source
+        destination:
+          type: string
+          title: Destination
+        options:
+          additionalProperties: true
+          type: object
+          title: Options
+          default: {}
+      type: object
+      required:
+      - source
+      - destination
+      title: TransferDataParams
+    TransferDataTask-Input:
+      properties:
+        name:
+          type: string
+          title: Name
+        description:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Description
+        task_type:
+          type: string
+          const: Move Data
+          title: Task Type
+          default: Move Data
+        parameters:
+          anyOf:
+          - $ref: '#/components/schemas/TransferDataParams-Input'
+          - $ref: '#/components/schemas/TransferDataListParams-Input'
+          title: Parameters
+      type: object
+      required:
+      - name
+      - parameters
+      title: TransferDataTask
+    TransferDataTask-Output:
+      properties:
+        name:
+          type: string
+          title: Name
+        description:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Description
+        task_type:
+          type: string
+          const: Move Data
+          title: Task Type
+          default: Move Data
+        parameters:
+          anyOf:
+          - $ref: '#/components/schemas/TransferDataParams-Output'
+          - $ref: '#/components/schemas/TransferDataListParams-Output'
+          title: Parameters
+      type: object
+      required:
+      - name
+      - parameters
+      title: TransferDataTask
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+        input:
+          title: Input
+        ctx:
+          type: object
+          title: Context
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
