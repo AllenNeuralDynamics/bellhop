@@ -30,5 +30,4 @@
 - `test_and_lint` and the release pipeline can also be run manually
   (`workflow_dispatch`)
 - The reusable workflows support building/deploying docs to GitHub Pages, but
-  this repo disables it (`build_docs: false`); enabling it also requires
-  granting `pages: write` and `id-token: write` in `bellhop_release.yml`
+  this repo disables it (`build_docs: false`)

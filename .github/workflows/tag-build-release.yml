@@ -16,6 +16,10 @@
 #
 #   jobs:
 #     tag-and-publish:
+#       permissions:            # all nested jobs inherit these
+#         contents: write       # push tags, create releases, upload assets
+#         pages: write          # only needed when build_docs: true
+#         id-token: write       # only needed when build_docs: true
 #       uses: <org>/<repo>/.github/workflows/sipe-tag-build-publish.yml@<ref>
 #       with:
 #         auto_detect_artifacts_folder: dist   # optional, default: ''
@@ -118,8 +122,6 @@ jobs:
     needs: [tag-release]
     if: needs.tag-release.outputs.tag_already_exists == 'false'
     runs-on: windows-latest
-    permissions:
-      contents: write  # upload release assets
     steps:
     - uses: actions/checkout@v4
     - uses: astral-sh/setup-uv@v5

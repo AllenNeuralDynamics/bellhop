@@ -11,8 +11,9 @@ on:
 
 jobs:
   tag-and-publish:
-    # Needed to push tags, create releases, and upload release assets.
-    # If build_docs is enabled, also grant: pages: write, id-token: write.
+    # contents: write is needed to push tags, create releases, and upload
+    # release assets. If build_docs is enabled, also grant pages: write and
+    # id-token: write for the GitHub Pages deploy.
     permissions:
       contents: write
     uses: ./.github/workflows/tag-build-release.yml
