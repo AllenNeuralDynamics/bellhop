@@ -1,0 +1,23 @@
+name: Tag and Publish
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  tag-and-publish:
+    # Needed to push tags, create releases, and upload release assets.
+    # If build_docs is enabled, also grant: pages: write, id-token: write.
+    permissions:
+      contents: write
+    uses: ./.github/workflows/tag-build-release.yml
+    with:
+      auto_detect_artifacts_folder: dist
+      build_docs: false
+      build_command: just build
+      test_command: just test_exe
