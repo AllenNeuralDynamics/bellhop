@@ -15,3 +15,10 @@ If there are any errors during the handoff process (like maybe the LIMS handshak
 
 
 ## Demo
+
+## Contributing
+
+### Building from source
+Bellhop uses pyinstaller to bundle itself as a portable executable.
+
+Run `just build` to compile and build this, and `just test_exe` for a simple build test or `just run_exe` to run the compiled result.

@@ -13,6 +13,9 @@ class Config(BaseSettings, validate_default=True):
 
     api_port: int = 8312
 
+    serve_ui: bool = True
+    ui_port: int = 8311
+
     env_vars_to_show: list[str] = [
         "COMPUTERNAME",
         "AIBS_COMP_ID",

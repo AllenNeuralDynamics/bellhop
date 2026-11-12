@@ -1,15 +1,17 @@
 import json
+import multiprocessing
 from pathlib import Path
 from typing import Literal
 
 import yaml
 from cyclopts import App
 
+from bellhop import __version__
 from bellhop.api import app as fastapi_app, main
 from bellhop.config import Config
 from bellhop.self_test import run_self_test
 
-cli_app = App()
+cli_app = App(version=__version__)
 
 
 @cli_app.command
@@ -53,4 +55,5 @@ cli_app.command(run_self_test)
 cli_app.default(main)
 
 if __name__ == "__main__":
+    multiprocessing.freeze_support()  # intercept spawned workers before CLI parsing (frozen exe)
     cli_app()

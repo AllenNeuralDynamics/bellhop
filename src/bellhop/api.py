@@ -253,4 +253,10 @@ def submit_template_job(
 def main(**kwargs) -> None:
     app.state.config = Config(**kwargs)
 
+    if app.state.config.serve_ui:
+        from bellhop_ui.server import start_ui_thread
+
+        start_ui_thread(port=app.state.config.ui_port)
+        logger.info(f"Serving UI on port {app.state.config.ui_port}")
+
     uvicorn.run(app, host="0.0.0.0", port=app.state.config.api_port)
