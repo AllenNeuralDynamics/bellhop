@@ -1,0 +1,63 @@
+[project]
+name = "bellhop"
+version = "0.1.0.dev1"
+description = "Add your description here"
+readme = "README.md"
+authors = [
+    { name = "Patrick Latimer", email = "patrick.latimer@alleninstitute.org" }
+]
+requires-python = ">=3.11"
+dependencies = [
+    "apscheduler>=3.11.1",
+    "bellhop-client",
+    "bellhop-models",
+    "bellhop-trolley",
+    "bellhop-ui",
+    "cyclopts>=4.3.0",
+    "fastapi>=0.140.13",
+    "jinja2>=3.1.6",
+    "loguru>=0.7.3",
+    "platformdirs>=4.5.1",
+    "pydantic>=2.11.5",
+    "pydantic-settings>=2.9.1",
+    "pyyaml>=6.0.3",
+    "sqlalchemy>=2.0",
+    "uvicorn>=0.52.1",
+    "watchdog>=6.0",
+]
+
+[tool.uv.workspace]
+members = ["packages/*"]
+
+[tool.uv.sources]
+bellhop-client = { workspace = true }
+bellhop-models = { workspace = true }
+bellhop-trolley = { workspace = true }
+bellhop-ui = { workspace = true }
+
+[project.scripts]
+bellhop = "bellhop.cli:cli_app"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[dependency-groups]
+dev = [
+    # "jupyter>=1.1.1",
+    "pytest>=8.4.0",
+    "moto",
+    "pyinstaller",
+]
+
+[tool.ruff]
+line-length = 120
+
+[tool.ruff.lint]
+# Enable the isort (I) rule category
+extend-select = ["I"]
+
+[tool.ruff.lint.isort]
+# Optional: Add custom isort settings if needed
+combine-as-imports = true
+force-sort-within-sections = false
