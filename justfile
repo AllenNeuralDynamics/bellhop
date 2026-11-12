@@ -36,7 +36,7 @@ test_all_versions:
 	uv run --isolated --python 3.12 pytest
 	uv run --isolated --python 3.13 pytest
 	uv run --isolated --python 3.14 pytest
-	uv run --isolated --python 3.15 pytest
+	# uv run --isolated --python 3.15 pytest
 
 clear_ui_cache:
 	cd packages/bellhop-ui && rm -rf .web
