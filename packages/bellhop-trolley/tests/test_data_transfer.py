@@ -19,8 +19,8 @@ from bellhop_trolley.data_transfer import (
 def _reset_state():
     """Reset LRU caches and shim settings between tests."""
     with (
-        shims.local.context.configure(shims.local.context.config()),
-        shims.s3.context.configure(shims.s3.context.config()),
+        shims.local.context.override(shims.local.context.config()),
+        shims.s3.context.override(shims.s3.context.config()),
     ):
         yield
     _get_copier.cache_clear()

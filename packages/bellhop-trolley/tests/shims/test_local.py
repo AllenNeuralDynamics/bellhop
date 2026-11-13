@@ -13,7 +13,7 @@ from bellhop_trolley.shims import local
 
 @pytest.fixture(params=["shutil", "robocopy"])
 def copy_method(request):
-    with local.context.configure(copy_method=request.param):
+    with local.context.override(copy_method=request.param):
         yield request.param
 
 
