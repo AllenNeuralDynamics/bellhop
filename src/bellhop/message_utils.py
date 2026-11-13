@@ -5,18 +5,18 @@ from email.mime.text import MIMEText
 
 from loguru import logger
 
-# TODO: Replace with apprise
+# TODO: Replace with apprise and fix config
 
 
 def send_email(
     subject: str,
     body: str,
     to: list[str],
+    from_email: str,
+    smtp_server: str | None,
 ) -> None:
     """
-    Compile subject and body into an email, and send using the computer's SMTP server.
-
-    NOTE: this only works on linux, windows machines don't have an smtp server running by default.
+    Compile subject and body into an email, and send using the specified SMTP server.
     """
     # Build message
     # msg.add_header("Content-Type", "text/html")
@@ -28,19 +28,19 @@ def send_email(
     msg.attach(html_part)
 
     msg["Subject"] = subject
-    msg["From"] = "svc_mpe@alleninstitute.org"
-    if email_override := os.getenv("H2RODENT_EMAIL_OVERRIDE_TO", False):
-        to = [email_override]
+    msg["From"] = from_email
     msg["To"] = ", ".join(to)
-
-    smtp_server = os.getenv("H2RODENT_SMTP_SERVER", "aidc-mx-1.corp.alleninstitute.org")
 
     # Send message
     try:
-        if int(os.getenv("H2RODENT_ENABLE_EMAILS", 0)) == 1:
-            with smtplib.SMTP(smtp_server) as s:
-                s.send_message(msg)
-                print(f"EMAILING {to}")
+        if int(os.getenv("BELLHOP_DISABLE_EMAILS", 0)) == 1:
+            logger.info("BELLHOP_DISABLE_EMAILS is set; skipping email")
+            return
+        if not smtp_server:
+            logger.warning("No SMTP server configured (Config.smtp_server); skipping email")
+            return
+        with smtplib.SMTP(smtp_server) as s:
+            s.send_message(msg)
         logger.info(
             "Sent email",
             subject=subject,

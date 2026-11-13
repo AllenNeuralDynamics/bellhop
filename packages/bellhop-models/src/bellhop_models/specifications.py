@@ -164,6 +164,8 @@ class SendMessageParams(BaseModel):
     recipient: str
     subject: str
     body: str
+    from_email: str
+    smtp_server: str
 
 
 class SendMessageTask(TaskSpecification[SendMessageParams]):
