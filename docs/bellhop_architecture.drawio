@@ -1,72 +1,72 @@
 <mxfile host="65bd71144e">
     <diagram name="Page-1" id="VpLsjIIDLuAVuMfRmN4_">
-        <mxGraphModel dx="1151" dy="619" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+        <mxGraphModel dx="1088" dy="612" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
             <root>
                 <mxCell id="0"/>
                 <mxCell id="1" parent="0"/>
-                <mxCell id="MpCrRf3VQOImDC203fc6-2" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" parent="1" vertex="1">
-                    <mxGeometry x="260" y="304" width="580" height="356" as="geometry"/>
+                <mxCell id="vaVErX9_9vx9T_MIqWq_-8" parent="1" style="whiteSpace=wrap;html=1;" value="" vertex="1">
+                    <mxGeometry height="210" width="772" x="48" y="780" as="geometry"/>
                 </mxCell>
-                <mxCell id="MpCrRf3VQOImDC203fc6-18" style="rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;startArrow=none;startFill=0;endArrow=none;endFill=0;" parent="1" source="MpCrRf3VQOImDC203fc6-3" target="MpCrRf3VQOImDC203fc6-5" edge="1">
+                <mxCell id="MpCrRf3VQOImDC203fc6-2" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" value="" vertex="1">
+                    <mxGeometry height="356" width="580" x="260" y="304" as="geometry"/>
+                </mxCell>
+                <mxCell id="MpCrRf3VQOImDC203fc6-3" parent="1" style="rounded=0;whiteSpace=wrap;html=1;" value="&lt;div&gt;&lt;b style=&quot;color: rgb(63, 63, 63); scrollbar-color: rgba(121, 121, 121, 0.4) rgb(30, 30, 30);&quot;&gt;bellhop-ui&lt;/b&gt;&lt;/div&gt;Web UI for user interaction&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;" vertex="1">
+                    <mxGeometry height="90" width="150" x="28" y="313" as="geometry"/>
+                </mxCell>
+                <mxCell id="MpCrRf3VQOImDC203fc6-4" parent="1" style="rounded=0;whiteSpace=wrap;html=1;" value="3rd party software&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;" vertex="1">
+                    <mxGeometry height="90" width="150" x="28" y="432" as="geometry"/>
+                </mxCell>
+                <mxCell id="MpCrRf3VQOImDC203fc6-5" parent="1" style="rounded=0;whiteSpace=wrap;html=1;" value="HTTP API&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;Add, read, update, delete Jobs&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;Get Status, execution history, logs&lt;/div&gt;" vertex="1">
+                    <mxGeometry height="150" width="100" x="280" y="360" as="geometry"/>
+                </mxCell>
+                <mxCell id="MpCrRf3VQOImDC203fc6-17" edge="1" parent="1" source="MpCrRf3VQOImDC203fc6-6" style="rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;endArrow=none;endFill=0;startArrow=none;startFill=0;" target="MpCrRf3VQOImDC203fc6-5">
                     <mxGeometry relative="1" as="geometry"/>
                 </mxCell>
-                <mxCell id="MpCrRf3VQOImDC203fc6-3" value="Web UI for user interaction&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;&lt;b&gt;bellhop-ui&lt;/b&gt;&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
-                    <mxGeometry x="28" y="313" width="150" height="90" as="geometry"/>
-                </mxCell>
-                <mxCell id="MpCrRf3VQOImDC203fc6-4" value="3rd party software&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
-                    <mxGeometry x="28" y="432" width="150" height="90" as="geometry"/>
-                </mxCell>
-                <mxCell id="MpCrRf3VQOImDC203fc6-5" value="HTTP API&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;Add, read, update, delete Instructions&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;Get Status, execution history, logs&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
-                    <mxGeometry x="280" y="360" width="100" height="150" as="geometry"/>
-                </mxCell>
-                <mxCell id="MpCrRf3VQOImDC203fc6-17" style="rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;endArrow=none;endFill=0;startArrow=none;startFill=0;" parent="1" source="MpCrRf3VQOImDC203fc6-6" target="MpCrRf3VQOImDC203fc6-5" edge="1">
+                <mxCell id="MpCrRf3VQOImDC203fc6-21" edge="1" parent="1" source="MpCrRf3VQOImDC203fc6-6" style="rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;endArrow=none;endFill=0;startArrow=none;startFill=0;" target="MpCrRf3VQOImDC203fc6-14">
                     <mxGeometry relative="1" as="geometry"/>
                 </mxCell>
-                <mxCell id="MpCrRf3VQOImDC203fc6-21" style="rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;endArrow=none;endFill=0;startArrow=none;startFill=0;" parent="1" source="MpCrRf3VQOImDC203fc6-6" target="MpCrRf3VQOImDC203fc6-14" edge="1">
+                <mxCell id="MpCrRf3VQOImDC203fc6-6" parent="1" style="rounded=0;whiteSpace=wrap;html=1;" value="&lt;b&gt;bellhop-client&lt;/b&gt;&lt;div&gt;library&lt;/div&gt;" vertex="1">
+                    <mxGeometry height="40" width="90" x="78" y="472" as="geometry"/>
+                </mxCell>
+                <mxCell id="MpCrRf3VQOImDC203fc6-16" edge="1" parent="1" source="MpCrRf3VQOImDC203fc6-8" style="rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;endArrow=none;endFill=0;startArrow=none;startFill=0;" target="MpCrRf3VQOImDC203fc6-5">
                     <mxGeometry relative="1" as="geometry"/>
                 </mxCell>
-                <mxCell id="MpCrRf3VQOImDC203fc6-6" value="&lt;b&gt;bellhop-client&lt;/b&gt;&lt;div&gt;library&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
-                    <mxGeometry x="78" y="472" width="90" height="40" as="geometry"/>
-                </mxCell>
-                <mxCell id="MpCrRf3VQOImDC203fc6-16" style="rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;endArrow=none;endFill=0;startArrow=none;startFill=0;" parent="1" source="MpCrRf3VQOImDC203fc6-8" target="MpCrRf3VQOImDC203fc6-5" edge="1">
+                <mxCell id="MpCrRf3VQOImDC203fc6-20" edge="1" parent="1" source="MpCrRf3VQOImDC203fc6-8" style="rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;endArrow=none;endFill=0;startArrow=none;startFill=0;" target="MpCrRf3VQOImDC203fc6-14">
                     <mxGeometry relative="1" as="geometry"/>
                 </mxCell>
-                <mxCell id="MpCrRf3VQOImDC203fc6-20" style="rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;endArrow=none;endFill=0;startArrow=none;startFill=0;" parent="1" source="MpCrRf3VQOImDC203fc6-8" target="MpCrRf3VQOImDC203fc6-14" edge="1">
+                <mxCell id="MpCrRf3VQOImDC203fc6-8" parent="1" style="rounded=0;whiteSpace=wrap;html=1;" value="&lt;b&gt;bellhop-client&lt;/b&gt;&lt;div&gt;CLI&lt;/div&gt;" vertex="1">
+                    <mxGeometry height="40" width="90" x="78" y="584" as="geometry"/>
+                </mxCell>
+                <mxCell id="MpCrRf3VQOImDC203fc6-9" parent="1" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=17;" value="Bellhop Service" vertex="1">
+                    <mxGeometry height="30" width="160" x="480" y="274" as="geometry"/>
+                </mxCell>
+                <mxCell id="MpCrRf3VQOImDC203fc6-10" parent="1" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=15;" value="Database&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;Jobs&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;" vertex="1">
+                    <mxGeometry height="70" width="100" x="414" y="519" as="geometry"/>
+                </mxCell>
+                <mxCell id="MpCrRf3VQOImDC203fc6-30" edge="1" parent="1" source="MpCrRf3VQOImDC203fc6-11" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" target="MpCrRf3VQOImDC203fc6-12">
                     <mxGeometry relative="1" as="geometry"/>
                 </mxCell>
-                <mxCell id="MpCrRf3VQOImDC203fc6-8" value="&lt;b&gt;bellhop-client&lt;/b&gt;&lt;div&gt;CLI&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
-                    <mxGeometry x="78" y="584" width="90" height="40" as="geometry"/>
+                <mxCell id="MpCrRf3VQOImDC203fc6-11" parent="1" style="rounded=0;whiteSpace=wrap;html=1;" value="APScheduler&lt;div&gt;Job Store&lt;/div&gt;" vertex="1">
+                    <mxGeometry height="60" width="90" x="534" y="524" as="geometry"/>
                 </mxCell>
-                <mxCell id="MpCrRf3VQOImDC203fc6-9" value="Bellhop Service" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=17;" parent="1" vertex="1">
-                    <mxGeometry x="480" y="274" width="160" height="30" as="geometry"/>
-                </mxCell>
-                <mxCell id="MpCrRf3VQOImDC203fc6-10" value="Database&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;Instructions&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=15;" parent="1" vertex="1">
-                    <mxGeometry x="369" y="519" width="100" height="70" as="geometry"/>
-                </mxCell>
-                <mxCell id="MpCrRf3VQOImDC203fc6-30" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" parent="1" source="MpCrRf3VQOImDC203fc6-11" target="MpCrRf3VQOImDC203fc6-12" edge="1">
-                    <mxGeometry relative="1" as="geometry"/>
-                </mxCell>
-                <mxCell id="MpCrRf3VQOImDC203fc6-11" value="APScheduler&lt;div&gt;Job Store&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
-                    <mxGeometry x="534" y="524" width="90" height="60" as="geometry"/>
-                </mxCell>
-                <mxCell id="5" style="edgeStyle=none;html=1;" edge="1" parent="1" source="MpCrRf3VQOImDC203fc6-12">
+                <mxCell id="5" edge="1" parent="1" source="MpCrRf3VQOImDC203fc6-12" style="edgeStyle=none;html=1;">
                     <mxGeometry relative="1" as="geometry">
                         <mxPoint x="930" y="554" as="targetPoint"/>
                     </mxGeometry>
                 </mxCell>
-                <mxCell id="MpCrRf3VQOImDC203fc6-12" value="Instruction/task executor" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
-                    <mxGeometry x="655" y="524" width="120" height="60" as="geometry"/>
+                <mxCell id="MpCrRf3VQOImDC203fc6-12" parent="1" style="rounded=0;whiteSpace=wrap;html=1;" value="Job/task executor" vertex="1">
+                    <mxGeometry height="60" width="120" x="655" y="524" as="geometry"/>
                 </mxCell>
-                <mxCell id="MpCrRf3VQOImDC203fc6-14" value="Service management (start/stop/kill/status)" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
-                    <mxGeometry x="260" y="660" width="120" height="60" as="geometry"/>
+                <mxCell id="MpCrRf3VQOImDC203fc6-14" parent="1" style="rounded=0;whiteSpace=wrap;html=1;" value="Service management (start/stop/kill/status)" vertex="1">
+                    <mxGeometry height="60" width="120" x="260" y="660" as="geometry"/>
                 </mxCell>
-                <mxCell id="MpCrRf3VQOImDC203fc6-19" style="rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;startArrow=classic;startFill=1;" parent="1" source="MpCrRf3VQOImDC203fc6-5" target="MpCrRf3VQOImDC203fc6-22" edge="1">
+                <mxCell id="MpCrRf3VQOImDC203fc6-19" edge="1" parent="1" source="MpCrRf3VQOImDC203fc6-5" style="rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.25;entryDx=0;entryDy=0;startArrow=classic;startFill=1;exitX=0.997;exitY=0.441;exitDx=0;exitDy=0;exitPerimeter=0;" target="MpCrRf3VQOImDC203fc6-22">
                     <mxGeometry relative="1" as="geometry"/>
                 </mxCell>
-                <mxCell id="MpCrRf3VQOImDC203fc6-28" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" parent="1" source="MpCrRf3VQOImDC203fc6-22" target="MpCrRf3VQOImDC203fc6-10" edge="1">
+                <mxCell id="MpCrRf3VQOImDC203fc6-28" edge="1" parent="1" source="MpCrRf3VQOImDC203fc6-22" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" target="MpCrRf3VQOImDC203fc6-10">
                     <mxGeometry relative="1" as="geometry"/>
                 </mxCell>
-                <mxCell id="MpCrRf3VQOImDC203fc6-29" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="1" source="MpCrRf3VQOImDC203fc6-22" target="MpCrRf3VQOImDC203fc6-11" edge="1">
+                <mxCell id="MpCrRf3VQOImDC203fc6-29" edge="1" parent="1" source="MpCrRf3VQOImDC203fc6-22" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="MpCrRf3VQOImDC203fc6-11">
                     <mxGeometry relative="1" as="geometry">
                         <Array as="points">
                             <mxPoint x="500" y="484"/>
@@ -74,67 +74,77 @@
                         </Array>
                     </mxGeometry>
                 </mxCell>
-                <mxCell id="MpCrRf3VQOImDC203fc6-43" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;" parent="1" source="MpCrRf3VQOImDC203fc6-22" target="MpCrRf3VQOImDC203fc6-41" edge="1">
+                <mxCell id="MpCrRf3VQOImDC203fc6-22" parent="1" style="rounded=0;whiteSpace=wrap;html=1;" value="&lt;b&gt;bellhop-engine&lt;/b&gt;" vertex="1">
+                    <mxGeometry height="30" width="120" x="440" y="419" as="geometry"/>
+                </mxCell>
+                <mxCell id="MpCrRf3VQOImDC203fc6-50" edge="1" parent="1" source="MpCrRf3VQOImDC203fc6-31" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="MpCrRf3VQOImDC203fc6-12">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="MpCrRf3VQOImDC203fc6-31" parent="1" style="rounded=0;whiteSpace=wrap;html=1;labelPosition=center;verticalLabelPosition=top;align=center;verticalAlign=bottom;" value="Task functions" vertex="1">
+                    <mxGeometry height="100" width="230" x="600" y="349" as="geometry"/>
+                </mxCell>
+                <mxCell id="MpCrRf3VQOImDC203fc6-13" parent="1" style="rounded=0;whiteSpace=wrap;html=1;" value="Data Transfer&lt;div&gt;&lt;br&gt;&lt;div&gt;&lt;b&gt;bellhop-trolley&lt;/b&gt;&lt;/div&gt;&lt;/div&gt;" vertex="1">
+                    <mxGeometry height="60" width="94" x="610" y="374" as="geometry"/>
+                </mxCell>
+                <mxCell id="MpCrRf3VQOImDC203fc6-32" parent="1" style="rounded=0;whiteSpace=wrap;html=1;" value="Subprocess Utils" vertex="1">
+                    <mxGeometry height="30" width="96" x="724" y="357" as="geometry"/>
+                </mxCell>
+                <mxCell id="MpCrRf3VQOImDC203fc6-38" parent="1" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;fontSize=19;" value="bellhop-models: light package with pydantic models imported by engine, api, client, ui." vertex="1">
+                    <mxGeometry height="40" width="740" x="55" y="782" as="geometry"/>
+                </mxCell>
+                <mxCell id="MpCrRf3VQOImDC203fc6-39" parent="1" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" value="&lt;h1&gt;Bellhop - Trackable automated data movement/housekeeping&lt;/h1&gt;" vertex="1">
+                    <mxGeometry height="70" width="720" x="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="MpCrRf3VQOImDC203fc6-40" parent="1" style="text;html=1;align=left;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=default;" value="Desktop software to handle data egress off of scientific acquisition machines.&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;A utilities library contains Protocol-matched, optimized data movement functions for various storage solutions (local, network, s3, google cloud)&lt;br&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;Each dataset has an &lt;b&gt;Job&amp;nbsp;&lt;/b&gt;submitted that contains one or more &lt;b&gt;Tasks&amp;nbsp;&lt;/b&gt;&lt;/div&gt;&lt;div&gt;- For example, compress this file, move data somewhere, then notify lab systems&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;&lt;b&gt;Jobs&amp;nbsp;&lt;/b&gt;are carried out by the bellhop engine, tracking successes and failing gracefully in a restartable manner&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;Interaction occurs through a web UI, CLI, or importable python client library.&lt;/div&gt;&lt;/div&gt;" vertex="1">
+                    <mxGeometry height="160" width="780" x="40" y="70" as="geometry"/>
+                </mxCell>
+                <mxCell id="vaVErX9_9vx9T_MIqWq_-11" edge="1" parent="1" source="MpCrRf3VQOImDC203fc6-42" style="edgeStyle=orthogonalEdgeStyle;html=1;entryX=0;entryY=0.75;entryDx=0;entryDy=0;" target="MpCrRf3VQOImDC203fc6-22">
                     <mxGeometry relative="1" as="geometry">
                         <Array as="points">
-                            <mxPoint x="500" y="470"/>
-                            <mxPoint x="500" y="470"/>
+                            <mxPoint x="474" y="620"/>
+                            <mxPoint x="390" y="620"/>
+                            <mxPoint x="390" y="441.52"/>
                         </Array>
                     </mxGeometry>
                 </mxCell>
-                <mxCell id="MpCrRf3VQOImDC203fc6-22" value="&lt;b&gt;bellhop-engine&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
-                    <mxGeometry x="440" y="419" width="120" height="30" as="geometry"/>
+                <mxCell id="MpCrRf3VQOImDC203fc6-42" parent="1" style="rounded=0;whiteSpace=wrap;html=1;" value="&lt;div&gt;&lt;font style=&quot;font-size: 10px;&quot;&gt;Folder on OS where&lt;/font&gt;&lt;/div&gt;&lt;div&gt;&lt;font style=&quot;font-size: 10px;&quot;&gt;users can drop&lt;/font&gt;&lt;/div&gt;&lt;div&gt;&lt;font style=&quot;font-size: 10px;&quot;&gt;JobSpecification yaml files&lt;/font&gt;&lt;/div&gt;" vertex="1">
+                    <mxGeometry height="60" width="120" x="414" y="660" as="geometry"/>
                 </mxCell>
-                <mxCell id="MpCrRf3VQOImDC203fc6-50" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="1" source="MpCrRf3VQOImDC203fc6-31" target="MpCrRf3VQOImDC203fc6-12" edge="1">
+                <mxCell id="MpCrRf3VQOImDC203fc6-45" parent="1" style="rounded=0;whiteSpace=wrap;html=1;align=left;spacingLeft=20;fillColor=#ffe6cc;strokeColor=#d79b00;" value="&lt;span style=&quot;&quot;&gt;&lt;b&gt;Job&lt;/b&gt;&lt;/span&gt;&lt;pre style=&quot;&quot;&gt;&lt;font face=&quot;Lucida Console&quot;&gt;tasks: list[Task]&lt;br&gt;scheduled_execution&lt;br&gt;history: list[TaskExecution]&lt;br&gt;...&lt;/font&gt;&lt;/pre&gt;" vertex="1">
+                    <mxGeometry height="130" width="239" x="70" y="840" as="geometry"/>
+                </mxCell>
+                <mxCell id="MpCrRf3VQOImDC203fc6-46" parent="1" style="rounded=0;whiteSpace=wrap;html=1;align=left;spacingLeft=20;fillColor=#ffe6cc;strokeColor=#d79b00;" value="&lt;span style=&quot;&quot;&gt;&lt;b&gt;Task&lt;/b&gt;&lt;/span&gt;&lt;p&gt;&lt;font face=&quot;Lucida Console&quot;&gt;&lt;span style=&quot;background-color: initial;&quot;&gt;program &lt;font color=&quot;#2d7600&quot;&gt;# Move Data, Run Subprocess, ...&lt;/font&gt;&lt;br&gt;&lt;/span&gt;&lt;span style=&quot;background-color: initial;&quot;&gt;arguments&lt;br&gt;&lt;/span&gt;&lt;span style=&quot;background-color: initial;&quot;&gt;state&lt;br&gt;...&lt;/span&gt;&lt;/font&gt;&lt;/p&gt;" vertex="1">
+                    <mxGeometry height="130" width="330" x="330" y="840" as="geometry"/>
+                </mxCell>
+                <mxCell id="MpCrRf3VQOImDC203fc6-47" parent="1" style="rounded=0;whiteSpace=wrap;html=1;align=left;spacingLeft=20;fillColor=#ffe6cc;strokeColor=#d79b00;" value="&lt;span style=&quot;&quot;&gt;&lt;b&gt;TaskExecution&lt;/b&gt;&lt;/span&gt;&lt;p&gt;&lt;font face=&quot;Lucida Console&quot;&gt;&lt;span style=&quot;background-color: initial;&quot;&gt;success&lt;br&gt;&lt;/span&gt;&lt;span style=&quot;background-color: initial;&quot;&gt;output&lt;br&gt;&lt;/span&gt;time_started&lt;br&gt;time_ended&lt;br&gt;...&lt;/font&gt;&lt;/p&gt;" vertex="1">
+                    <mxGeometry height="130" width="119" x="685" y="840" as="geometry"/>
+                </mxCell>
+                <mxCell id="4" edge="1" parent="1" source="2" style="edgeStyle=none;html=1;entryX=0.5;entryY=1;entryDx=0;entryDy=0;shape=flexArrow;" target="3">
                     <mxGeometry relative="1" as="geometry"/>
                 </mxCell>
-                <mxCell id="MpCrRf3VQOImDC203fc6-31" value="Task functions" style="rounded=0;whiteSpace=wrap;html=1;labelPosition=center;verticalLabelPosition=top;align=center;verticalAlign=bottom;" parent="1" vertex="1">
-                    <mxGeometry x="600" y="349" width="230" height="100" as="geometry"/>
+                <mxCell id="2" parent="1" style="rounded=0;whiteSpace=wrap;html=1;" value="&lt;div&gt;Local data storage&lt;/div&gt;" vertex="1">
+                    <mxGeometry height="60" width="120" x="870" y="663" as="geometry"/>
                 </mxCell>
-                <mxCell id="MpCrRf3VQOImDC203fc6-13" value="Data Transfer&lt;div&gt;&lt;br&gt;&lt;div&gt;&lt;b&gt;bellhop-trolley&lt;/b&gt;&lt;/div&gt;&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
-                    <mxGeometry x="610" y="374" width="94" height="60" as="geometry"/>
+                <mxCell id="3" parent="1" style="rounded=0;whiteSpace=wrap;html=1;" value="Remote data storage" vertex="1">
+                    <mxGeometry height="60" width="120" x="870" y="230" as="geometry"/>
                 </mxCell>
-                <mxCell id="MpCrRf3VQOImDC203fc6-32" value="Subprocess Utils" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
-                    <mxGeometry x="724" y="374" width="96" height="60" as="geometry"/>
+                <mxCell id="6" parent="1" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;textShadow=0;" value="Facilitate&lt;div&gt;Upload&lt;/div&gt;" vertex="1">
+                    <mxGeometry height="40" width="70" x="843" y="534" as="geometry"/>
                 </mxCell>
-                <mxCell id="MpCrRf3VQOImDC203fc6-38" value="Data Models (approximately)" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;fontSize=19;" parent="1" vertex="1">
-                    <mxGeometry x="210" y="782" width="270" height="40" as="geometry"/>
+                <mxCell id="vaVErX9_9vx9T_MIqWq_-6" parent="1" style="rounded=0;whiteSpace=wrap;html=1;" value="Message Utils (apprise)" vertex="1">
+                    <mxGeometry height="30" width="96" x="724" y="395" as="geometry"/>
                 </mxCell>
-                <mxCell id="MpCrRf3VQOImDC203fc6-39" value="&lt;h1&gt;Bellhop - Trackable automated data movement/housekeeping&lt;/h1&gt;" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" parent="1" vertex="1">
-                    <mxGeometry x="40" width="720" height="70" as="geometry"/>
+                <mxCell id="vaVErX9_9vx9T_MIqWq_-7" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;fontSize=41;" value="..." vertex="1">
+                    <mxGeometry height="30" width="60" x="740" y="410" as="geometry"/>
                 </mxCell>
-                <mxCell id="MpCrRf3VQOImDC203fc6-40" value="Desktop software to handle data egress off of scientific acquisition machines.&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;A utilities library contains Protocol-matched, optimized data movement functions for various storage solutions (local, network, s3, google cloud)&lt;br&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;Each dataset has an &lt;b&gt;Instruction &lt;/b&gt;submitted that contains one or more &lt;b&gt;Tasks&amp;nbsp;&lt;/b&gt;&lt;/div&gt;&lt;div&gt;- For example, compress this file, move data somewhere, then notify lab systems&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;&lt;b&gt;Instructions&lt;/b&gt;&amp;nbsp;are carried out by the bellhop engine, tracking successes and failing gracefully in a restartable manner&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;Interaction occurs through a web UI, CLI, or importable python client library.&lt;/div&gt;&lt;/div&gt;" style="text;html=1;align=left;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=default;" parent="1" vertex="1">
-                    <mxGeometry x="40" y="70" width="780" height="160" as="geometry"/>
+                <mxCell id="vaVErX9_9vx9T_MIqWq_-9" parent="1" style="rounded=0;whiteSpace=wrap;html=1;" value="&lt;b&gt;bellhop-client&lt;/b&gt;&lt;div&gt;library&lt;/div&gt;" vertex="1">
+                    <mxGeometry height="40" width="90" x="78" y="355" as="geometry"/>
                 </mxCell>
-                <mxCell id="MpCrRf3VQOImDC203fc6-44" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="1" source="MpCrRf3VQOImDC203fc6-41" target="MpCrRf3VQOImDC203fc6-42" edge="1">
+                <mxCell id="MpCrRf3VQOImDC203fc6-18" edge="1" parent="1" source="vaVErX9_9vx9T_MIqWq_-9" style="rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;startArrow=none;startFill=0;endArrow=none;endFill=0;" target="MpCrRf3VQOImDC203fc6-5">
                     <mxGeometry relative="1" as="geometry"/>
                 </mxCell>
-                <mxCell id="MpCrRf3VQOImDC203fc6-41" value="Sync to yaml files" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
-                    <mxGeometry x="440" y="600" width="120" height="40" as="geometry"/>
-                </mxCell>
-                <mxCell id="MpCrRf3VQOImDC203fc6-42" value="OS File System&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
-                    <mxGeometry x="440" y="660" width="120" height="60" as="geometry"/>
-                </mxCell>
-                <mxCell id="MpCrRf3VQOImDC203fc6-45" value="&lt;span style=&quot;&quot;&gt;&lt;b&gt;Instruction&lt;/b&gt;&lt;/span&gt;&lt;pre style=&quot;&quot;&gt;&lt;font face=&quot;Lucida Console&quot;&gt;tasks: list[Task]&lt;br&gt;scheduled_execution&lt;br&gt;history: list[TaskExecution]&lt;br/&gt;&lt;br/&gt;&lt;/font&gt;&lt;/pre&gt;" style="rounded=0;whiteSpace=wrap;html=1;align=left;spacingLeft=20;fillColor=#ffe6cc;strokeColor=#d79b00;" parent="1" vertex="1">
-                    <mxGeometry x="70" y="840" width="239" height="111" as="geometry"/>
-                </mxCell>
-                <mxCell id="MpCrRf3VQOImDC203fc6-46" value="&lt;span style=&quot;&quot;&gt;&lt;b&gt;Task&lt;/b&gt;&lt;/span&gt;&lt;p&gt;&lt;font face=&quot;Lucida Console&quot;&gt;&lt;span style=&quot;background-color: initial;&quot;&gt;program &lt;font color=&quot;#2d7600&quot;&gt;# bellhop-trolley or path to exe&lt;/font&gt;&lt;br&gt;&lt;/span&gt;&lt;span style=&quot;background-color: initial;&quot;&gt;arguments&lt;br&gt;&lt;/span&gt;&lt;span style=&quot;background-color: initial;&quot;&gt;state&lt;br&gt;&lt;br&gt;&lt;/span&gt;&lt;/font&gt;&lt;/p&gt;" style="rounded=0;whiteSpace=wrap;html=1;align=left;spacingLeft=20;fillColor=#ffe6cc;strokeColor=#d79b00;" parent="1" vertex="1">
-                    <mxGeometry x="330" y="840" width="330" height="111" as="geometry"/>
-                </mxCell>
-                <mxCell id="MpCrRf3VQOImDC203fc6-47" value="&lt;span style=&quot;&quot;&gt;&lt;b&gt;TaskExecution&lt;/b&gt;&lt;/span&gt;&lt;p&gt;&lt;font face=&quot;Lucida Console&quot;&gt;&lt;span style=&quot;background-color: initial;&quot;&gt;success&lt;br&gt;&lt;/span&gt;&lt;span style=&quot;background-color: initial;&quot;&gt;logs&lt;br&gt;&lt;/span&gt;time_started&lt;br&gt;time_ended&lt;/font&gt;&lt;/p&gt;" style="rounded=0;whiteSpace=wrap;html=1;align=left;spacingLeft=20;fillColor=#ffe6cc;strokeColor=#d79b00;" parent="1" vertex="1">
-                    <mxGeometry x="685" y="840" width="119" height="111" as="geometry"/>
-                </mxCell>
-                <mxCell id="4" style="edgeStyle=none;html=1;entryX=0.5;entryY=1;entryDx=0;entryDy=0;shape=flexArrow;" edge="1" parent="1" source="2" target="3">
-                    <mxGeometry relative="1" as="geometry"/>
-                </mxCell>
-                <mxCell id="2" value="&lt;div&gt;Local data storage&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
-                    <mxGeometry x="870" y="663" width="120" height="60" as="geometry"/>
-                </mxCell>
-                <mxCell id="3" value="Remote data storage" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
-                    <mxGeometry x="870" y="230" width="120" height="60" as="geometry"/>
-                </mxCell>
-                <mxCell id="6" value="Facilitate&lt;div&gt;Upload&lt;/div&gt;" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;textShadow=0;" vertex="1" parent="1">
-                    <mxGeometry x="843" y="534" width="70" height="40" as="geometry"/>
+                <mxCell id="a_TD67YdvLKzl-qz8rNb-6" parent="1" style="whiteSpace=wrap;html=1;" value="Job Templates" vertex="1">
+                    <mxGeometry height="40" width="70" x="439" y="334" as="geometry"/>
                 </mxCell>
             </root>
         </mxGraphModel>
