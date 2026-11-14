@@ -56,6 +56,8 @@ def _build_full_job() -> JobSpecification:
                     recipient="team@example.com",
                     subject="Done",
                     body="Pipeline complete.",
+                    from_email="bellhop@example.com",
+                    smtp_server="smtp.example.test",
                 ),
             ),
             HTTPRequestTask(
@@ -130,6 +132,8 @@ def test_job_serialization():
                     "recipient": "team@example.com",
                     "subject": "Done",
                     "body": "Pipeline complete.",
+                    "from_email": "bellhop@example.com",
+                    "smtp_server": "smtp.example.test",
                 },
             },
             {
