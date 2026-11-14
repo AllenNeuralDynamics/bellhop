@@ -42,8 +42,8 @@ For each storage implementation, fsspec has APIs for actually interacting with t
 
 So with fsspec libraries, one can do the following:
 ```python
-file = UPath('s3://bucket/folder/file.txt')
-file.write_text('hello')
+file = UPath("s3://bucket/folder/file.txt")
+file.write_text("hello")
 ```
 
 So why not just use fsspec libraries for data movement?
@@ -58,8 +58,8 @@ For example, uploading a file to s3 is usually done via Amazon's `boto3` library
 
 ```python
 # User code
-source = UPath('C:/myfile') # resolves to LocalPath
-destination = UPath('s3://bucket/myfile') # Resolves to S3Path
+source = UPath("C:/myfile")  # resolves to LocalPath
+destination = UPath("s3://bucket/myfile")  # Resolves to S3Path
 trolley.move_file(source, destination)
 ```
 
@@ -68,15 +68,18 @@ Under the hood, the trolley.move_file does the following:
 ```python
 # Bellhop-Trolley code
 
+
 class S3Interface(BellhopTrolleyProtocol):
     def move_file(source: LocalPath, destination: S3Path):
         boto3.upload(source, destination)
+
 
 def _get_interface(type1, type2) -> BellhopTrolleyProtocol:
     # Choose proper interface based on path types
     if type1 == LocalPath and type2 == S3Path:
         return S3Interface
     ...
+
 
 def move_file(source: UPath, destination: UPath):
     interface = _get_interface(type(source), type(destination))
