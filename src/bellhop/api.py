@@ -22,7 +22,7 @@ from bellhop.job_templates import TemplateManager
 async def lifespan(app: FastAPI):
     logger.info("Starting Bellhop API...")
     config = app.state.config
-    app.state.engine = Engine(db_file=str(config.database_file)).start()
+    app.state.engine = Engine(db_file=str(config.database_file), config=config).start()
     app.state.dropbox = JobDropbox(app.state.engine, config.dropbox_dir).start()
     app.state.template_manager = TemplateManager(config)
     yield

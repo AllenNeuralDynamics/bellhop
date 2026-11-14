@@ -12,6 +12,7 @@ import pytest
 from bellhop_models.specifications import RunCommandParams, RunProgramParams
 from cyclopts import App
 
+from bellhop.config import Config
 from bellhop.subprocess_utils import run_live_process
 from bellhop.task_executors import _run_command
 
@@ -66,14 +67,14 @@ def dummy_process(lifetime: int = 3, exit_code: int = 0):
 )
 def test_commands(params: RunCommandParams | RunProgramParams):
     log_queue: Queue[str] = Queue()
-    _run_command(params, log_queue)
+    _run_command(params, log_queue, Config())
 
 
 def test_command_output():
     marker = "BELLHOP_MARKER_42"
     command = RunCommandParams(command=f"echo {marker}")
     log_queue: Queue[str] = Queue()
-    _run_command(command, log_queue)
+    _run_command(command, log_queue, Config())
 
     output = _drain(log_queue)
     assert any(marker in line for line in output)
@@ -83,7 +84,7 @@ def test_run_command_handles_list():
     markers = ["MARKER_ONE", "MARKER_TWO"]
     command = RunCommandParams(command=[f"echo {m}" for m in markers])
     log_queue: Queue[str] = Queue()
-    _run_command(command, log_queue)
+    _run_command(command, log_queue, Config())
 
     output = _drain(log_queue)
     assert all(any(m in line for line in output) for m in markers)
@@ -93,7 +94,7 @@ def test_run_program_executes():
     marker = "PROGRAM_MARKER"
     params = RunProgramParams(program=sys.executable, arguments=["-c", f"print('{marker}')"])
     log_queue: Queue[str] = Queue()
-    _run_command(params, log_queue)
+    _run_command(params, log_queue, Config())
     assert any(marker in line for line in _drain(log_queue))
 
 

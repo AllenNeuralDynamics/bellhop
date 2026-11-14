@@ -287,3 +287,32 @@ def test_start_runs_pending_job_left_in_db_to_completion(tmp_path):
         assert _wait_for_terminal(job.id, engine) == "Completed"
     finally:
         engine.shutdown()
+
+
+def test_execute_job_passes_config_to_executors(tmp_path, monkeypatch, pending_job_spec):
+    """The Config given to _execute_job should reach the task executors.
+
+    Called in-process here; in production _execute_job runs in its own spawned
+    process with a pickled copy of the Config.
+    """
+    from bellhop import engine as engine_module
+    from bellhop.config import Config
+    from bellhop.engine import _execute_job
+
+    captured = {}
+
+    def fake_executor(params, log_queue, cfg):
+        captured["config"] = cfg
+
+    monkeypatch.setattr(engine_module, "task_executor_registry", {"Command": fake_executor})
+
+    db_file = str(tmp_path / "test.db")
+    job = Job.from_specification(pending_job_spec)
+    database = Database(db_file)
+    database.create_job(job)
+
+    config = Config(data_dir=tmp_path)
+    _execute_job(job.id, db_file, config)
+
+    assert captured["config"] is config
+    assert database.get_job(job.id).state == "Completed"

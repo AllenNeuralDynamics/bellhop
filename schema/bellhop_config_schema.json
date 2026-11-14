@@ -51,6 +51,33 @@
       "title": "Api Port",
       "type": "integer"
     },
+    "serve_ui": {
+      "default": true,
+      "title": "Serve Ui",
+      "type": "boolean"
+    },
+    "ui_port": {
+      "default": 8311,
+      "title": "Ui Port",
+      "type": "integer"
+    },
+    "email_from": {
+      "default": "bellhop@localhost",
+      "title": "Email From",
+      "type": "string"
+    },
+    "smtp_server": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Smtp Server"
+    },
     "env_vars_to_show": {
       "default": [
         "COMPUTERNAME",

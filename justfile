@@ -17,8 +17,8 @@ generate-client:
 	uvx ruff check --fix packages/bellhop-client/src/bellhop_client/
 	uvx ruff format packages/bellhop-client/src/bellhop_client/
 
-run:
-	uv run bellhop
+run *args: export_ui
+	uv run bellhop {{args}}
 
 # runs UI in dev mode
 ui:
@@ -36,7 +36,7 @@ test_all_versions:
 	uv run --isolated --python 3.12 pytest
 	uv run --isolated --python 3.13 pytest
 	uv run --isolated --python 3.14 pytest
-	# uv run --isolated --python 3.15 pytest
+#	uv run --isolated --python 3.15 pytest
 
 clear_ui_cache:
 	cd packages/bellhop-ui && rm -rf .web

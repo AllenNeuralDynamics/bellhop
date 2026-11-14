@@ -11,13 +11,15 @@ from bellhop_models.database import Job, Task, TaskExecution
 from bellhop_models.specifications import JobSpecification
 from loguru import logger
 
+from bellhop.config import Config
 from bellhop.db import DATABASE_FILE, Database
 from bellhop.task_executors import TaskExecutorFn, task_executor_registry
 
 
 class Engine:
-    def __init__(self, db_file: str = DATABASE_FILE):
+    def __init__(self, db_file: str = DATABASE_FILE, config: Config | None = None):
         self._db = Database(db_file)
+        self._config = config
         # never skip a job as "misfired"; late jobs should still run rather than being dropped
         self._scheduler = BackgroundScheduler(job_defaults={"misfire_grace_time": None})
         self._running_executors: dict[uuid.UUID, JobExecutor] = {}
@@ -119,7 +121,7 @@ class Engine:
             dead = [jid for jid, ex in self._running_executors.items() if not ex.is_alive()]
             for jid in dead:
                 self._running_executors.pop(jid)
-            executor = JobExecutor(job, self._db._db_file)
+            executor = JobExecutor(job, self._db._db_file, self._config)
             self._running_executors[job.id] = executor
         executor.start()
 
@@ -128,10 +130,10 @@ class Engine:
 
 
 class JobExecutor:
-    def __init__(self, job: Job, db_file: str):
+    def __init__(self, job: Job, db_file: str, config: Config | None = None):
         self.job = job
         self._process = multiprocessing.Process(
-            target=_execute_job, args=(job.id, db_file), daemon=True, name=f"job-{job.id}"
+            target=_execute_job, args=(job.id, db_file, config), daemon=True, name=f"job-{job.id}"
         )
 
     def start(self) -> None:
@@ -145,7 +147,11 @@ class JobExecutor:
         return self._process is not None and self._process.is_alive()
 
 
-def _execute_job(job_id: uuid.UUID, db_file: str) -> None:
+def _execute_job(job_id: uuid.UUID, db_file: str, config: Config | None = None) -> None:
+    if config is None:
+        # Runs in a spawned process, so nothing is inherited from the parent;
+        # fall back to a Config built from the environment.
+        config = Config()
     logger.remove()
     logger.add(
         sys.stderr,
@@ -170,7 +176,7 @@ def _execute_job(job_id: uuid.UUID, db_file: str) -> None:
                 database.update_task(task)
 
                 executor_func = task_executor_registry[task.task_type]
-                task_execution = _execute_task(task, database, executor_func)
+                task_execution = _execute_task(task, database, executor_func, config)
 
                 if task_execution.success:
                     logger.info(f"Task '{task.name}' completed")
@@ -209,13 +215,13 @@ class _LogWriter:
         return "\n".join(self._lines)
 
 
-def _execute_task(task: Task, database: Database, executor_func: TaskExecutorFn) -> TaskExecution:
+def _execute_task(task: Task, database: Database, executor_func: TaskExecutorFn, config: Config) -> TaskExecution:
     execution = TaskExecution(task=task, time_started=datetime.datetime.now())
     database.add_execution(execution)
     log_writer = _LogWriter(execution.id, database)
     message = None
     try:
-        executor_func(task.parameters, log_writer)
+        executor_func(task.parameters, log_writer, config)
         success = True
     except Exception as e:
         success = False
