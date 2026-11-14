@@ -10,6 +10,7 @@ from bellhop import __version__
 from bellhop.api import app as fastapi_app, main
 from bellhop.config import Config
 from bellhop.self_test import run_self_test
+from bellhop.service import service_app
 
 cli_app = App(version=__version__)
 
@@ -51,6 +52,7 @@ def openapi_spec(
 
 
 cli_app.command(run_self_test)
+cli_app.command(service_app)
 
 cli_app.default(main)
 

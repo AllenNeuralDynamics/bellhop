@@ -27,6 +27,34 @@ Once installed, run Bellhop with:
 & "C:\Program Files\AllenInstitute\bellhop\bellhop.exe"
 ```
 
+### Running as a Windows Service (Servy)
+
+With [Servy](https://github.com/aelassas/servy) installed (`servy-cli.exe`), you can register and manage Bellhop as a Windows service from an elevated (**Administrator**) terminal:
+
+```powershell
+& "C:\Program Files\AllenInstitute\bellhop\bellhop.exe" service install --start
+& "C:\Program Files\AllenInstitute\bellhop\bellhop.exe" service status
+& "C:\Program Files\AllenInstitute\bellhop\bellhop.exe" service restart
+& "C:\Program Files\AllenInstitute\bellhop\bellhop.exe" service stop
+& "C:\Program Files\AllenInstitute\bellhop\bellhop.exe" service uninstall
+```
+
+Or manage the service programmatically from Python via `bellhop.service`:
+
+```python
+from bellhop.service import (
+    install_service,
+    restart_service,
+    service_status,
+    start_service,
+    stop_service,
+    uninstall_service,
+)
+
+install_service(start=True)
+print(service_status())  # ServiceStatus.RUNNING
+```
+
 ## Usage
 
 Install bellhop on your lab computer on which you're collecting data, and it will run as a service in the background. For each dataset, submit a **Job** detailing the steps to deal with the data (for instance, 1. transfer data to the cloud, 2. notify your LIMS, 3. send an email, 4. delete data off the instrument). This job will get executed by bellhop at the scheduled time. You can open the bellhop UI or query the API to see progress and past/upcoming jobs. 
