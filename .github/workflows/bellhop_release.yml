@@ -22,3 +22,4 @@ jobs:
       build_docs: false
       build_command: just build
       test_command: just test_exe
+      release_files: scripts/install_bellhop.ps1
