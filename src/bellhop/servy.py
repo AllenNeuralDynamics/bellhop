@@ -1,4 +1,4 @@
-""" Commands for managing the Bellhop service with servy.
+"""Commands for managing the Bellhop service with servy.
 
 Usage: main service COMMAND
 
@@ -327,7 +327,7 @@ def install(
     install: bool = True,
     servy_cli: Path | None = None,
     options: Annotated[ServyOptions, Parameter(name="*")] = DEFAULT_SERVY_OPTIONS,
-    start: bool = True,
+    start_after_install: Annotated[bool, Parameter(name="--start")] = True,
     **config_kwargs: Any,
 ) -> None:
     """Write a Servy JSON service configuration and use it to install Bellhop as a service.
@@ -340,8 +340,8 @@ def install(
         raise PermissionError("Administrator privileges are required to install the service.")
     output_path = make_servy_config(file, options=options, **config_kwargs)
     setup_servy_from_config(output_path, install=install, servy_cli=servy_cli)
-    if start:
-        start(servy_cli=servy_cli)
+    if start_after_install:
+        start(name=options.name, servy_cli=servy_cli)
 
 
 def uninstall(

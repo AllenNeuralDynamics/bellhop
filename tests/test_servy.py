@@ -192,6 +192,7 @@ def test_make_servy_config_and_cli_install(tmp_path: Path, monkeypatch: pytest.M
             str(data_dir),
             "--api-port",
             "9010",
+            "--no-start",
         ],
         result_action="return_value",
     )
@@ -199,6 +200,48 @@ def test_make_servy_config_and_cli_install(tmp_path: Path, monkeypatch: pytest.M
     cli_payload = json.loads(written.read_text(encoding="utf-8"))
     assert cli_payload["Name"] == "BellhopFromCli"
     assert cli_payload["HeartbeatUrl"] == "http://127.0.0.1:9010/"
+
+
+@pytest.mark.parametrize(
+    ("start_args", "should_start"),
+    [([], True), (["--start"], True), (["--no-start"], False)],
+    ids=["default", "start", "no-start"],
+)
+def test_install_start_option(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, start_args: list[str], should_start: bool
+):
+    fake_servy_cli = tmp_path / "servy-cli.exe"
+    fake_servy_cli.write_text("stub")
+    config_file = tmp_path / "service.json"
+    calls: list[list[str]] = []
+    monkeypatch.setattr(servy, "_is_administrator", lambda: True)
+    monkeypatch.setattr(
+        subprocess,
+        "run",
+        lambda args, **kwargs: calls.append(args) or subprocess.CompletedProcess(args, 0, stdout=""),
+    )
+
+    cli_app(
+        [
+            "service",
+            "install",
+            "--servy-cli",
+            str(fake_servy_cli),
+            "--file",
+            str(config_file),
+            "--data-dir",
+            str(tmp_path / "data"),
+            "--name",
+            "BellhopRig1",
+            *start_args,
+        ],
+        result_action="return_value",
+    )
+
+    expected = [[str(fake_servy_cli), "import", "-c", "json", "-p", str(config_file), "--quiet", "--install"]]
+    if should_start:
+        expected.append([str(fake_servy_cli), "start", "--name", "BellhopRig1"])
+    assert calls == expected
 
 
 def test_servy_management_commands(tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
