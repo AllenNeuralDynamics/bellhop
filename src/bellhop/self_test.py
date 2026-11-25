@@ -1,0 +1,151 @@
+"""Self-test that submits a dummy job to a running Bellhop API and waits for it to complete.
+
+The job creates dummy data via a subprocess, copies it to a second location, then deletes both.
+"""
+
+import os
+import tempfile
+import time
+import uuid
+from pathlib import Path
+
+from bellhop_client import BellhopClient
+from bellhop_models.specifications import (
+    CommandTask,
+    DeleteDataParams,
+    DeleteDataTask,
+    JobSpecification,
+    RunCommandParams,
+    TransferDataParams,
+    TransferDataTask,
+)
+
+
+def _make_dummy_data(folder: Path) -> None:
+    files = [
+        "file1.txt",
+        "file2.txt",
+        "dir1/file3.txt",
+        "dir2/file4.txt",
+        "dir2/subdir1/file5.txt",
+    ]
+    for name in files:
+        path = folder / name
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_bytes(os.urandom(50 * 1_000))
+
+
+def make_job_spec(
+    source_dir: Path,
+    dest_dir: Path,
+    *,
+    name: str = "Bellhop self-test",
+    description: str = "Automated self-test job",
+    custom_fields: dict | None = None,
+) -> JobSpecification:
+    """Build a dummy JobSpecification that echoes, moves files, verifies, then deletes both locations.
+
+    Shared by the self-test (which runs one such job for real) and the demo data
+    generator (which fills a database with many historical copies).
+    """
+
+    echo_task = CommandTask(
+        name="Echo",
+        parameters=RunCommandParams(
+            command='echo "Hello from bellhop self-test"',
+        ),
+    )
+
+    move_task = TransferDataTask(
+        name="Move data",
+        parameters=TransferDataParams(
+            source=str(source_dir),
+            destination=str(dest_dir),
+        ),
+    )
+
+    verify_task = CommandTask(
+        name="Verify destination",
+        parameters=RunCommandParams(
+            command=f'dir /b /s "{dest_dir}"',
+        ),
+    )
+
+    delete_source_task = DeleteDataTask(
+        name="Delete source dir",
+        parameters=DeleteDataParams(source=str(source_dir)),
+    )
+
+    delete_dest_task = DeleteDataTask(
+        name="Delete dest dir",
+        parameters=DeleteDataParams(source=str(dest_dir)),
+    )
+
+    return JobSpecification(
+        name=name,
+        description=description,
+        custom_fields=custom_fields or {},
+        tasks=[echo_task, move_task, verify_task, delete_source_task, delete_dest_task],
+    )
+
+
+def _wait_for_terminal(job_id: uuid.UUID, timeout: float):
+    """Poll until the job reaches Completed or Errored, then return the Job."""
+    deadline = time.monotonic() + timeout
+    while time.monotonic() < deadline:
+        job = BellhopClient().get_job(job_id)
+        if job.state in ("Completed", "Errored"):
+            return job
+        time.sleep(0.5)
+    raise TimeoutError(f"Self-test job {job_id} did not finish within {timeout}s")
+
+
+def run_self_test(
+    *,
+    working_dir: Path | None = None,
+    label: str | None = None,
+    timeout: float = 60.0,
+    custom_fields: dict | None = None,
+):
+    """Submit a dummy job to the Bellhop API and wait for it to complete."""
+    if custom_fields is None:
+        custom_fields = {}
+
+    root = working_dir or Path(tempfile.gettempdir())
+    run_id = uuid.uuid4().hex[:8]
+    source_dir = root / f"bellhop_selftest_{run_id}_src"
+    dest_dir = root / f"bellhop_selftest_{run_id}_dst"
+    source_dir.mkdir(parents=True, exist_ok=True)
+    dest_dir.mkdir(parents=True, exist_ok=True)
+
+    _make_dummy_data(source_dir)
+
+    job_spec = make_job_spec(
+        source_dir,
+        dest_dir,
+        name=f"Bellhop self-test {run_id}",
+        custom_fields={"self_test": True, **custom_fields},
+    )
+    job_id = BellhopClient().submit_job(job_spec)
+    print(f"Self-test job submitted: {job_id}")
+
+    job = _wait_for_terminal(job_id, timeout)
+    print(f"Self-test job finished: {job.state}")
+
+    if job.state != "Completed":
+        failed = next((h for h in job.history if h.success is False), None)
+        detail = failed.message if failed else "unknown"
+        raise RuntimeError(f"Self-test job {job_id} ended in state '{job.state}': {detail}")
+
+    return job
+
+
+if __name__ == "__main__":
+    # run_self_test()
+    job_spec = make_job_spec(
+        Path(__file__).parent.parent.parent / "examples" / "data" / "source",
+        Path(__file__).parent.parent.parent / "examples" / "data" / "dest",
+        name="Bellhop self-test",
+        custom_fields={"self_test": True},
+    )
+    print(job_spec.to_yaml())
