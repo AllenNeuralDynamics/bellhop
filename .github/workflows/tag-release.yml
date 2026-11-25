@@ -114,7 +114,7 @@ jobs:
         VERSION_TO_CHECK: ${{ steps.get_info.outputs.PACKAGE_VERSION }}
       run: |
         # Use uv & Python to accurately parse the PEP 440 prerelease status
-        $is_pre = uv run python -c "from packaging.version import Version; print(Version('$env:VERSION_TO_CHECK').is_prerelease)"
+        $is_pre = uv run --no-project python -c "from packaging.version import Version; print(Version('$env:VERSION_TO_CHECK').is_prerelease)"
         
         if ($is_pre -eq "True") {
             (echo "is_stable=false") >> $env:GITHUB_OUTPUT
